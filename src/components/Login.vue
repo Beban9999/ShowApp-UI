@@ -2,6 +2,8 @@
 import router from "../router";
 import { useAuthenticationStore } from "../stores/auth_store";
 import { ref } from "vue";
+import { service_post } from "../services/service_call";
+import { CallType } from "../models/enums/CallType";
 
 const loginObject = ref({
     f_name: "",
@@ -16,26 +18,30 @@ const errorObject = ref({
     visibility: "p-error hidden"
 })
 
-function loginClick() {
-    authStore.doLogin(loginObject.value.username, loginObject.value.password).then(result => {
-        if (!result) {
-            errorObject.value.message = "Server error";
-            errorObject.value.visibility = "p-error"
-        }
-        else if (result && result.returnCode === 0) {
-            authStore.login();
-        }
-        else {
-            if(result.returnValue.split("|")[0] === "verify"){
-                console.log("Verifiy")
-                authStore.email = result.returnValue.split("|")[1]
-                router.push({name: "Verify"})
-            }
-            errorObject.value.message = result.returnValue;
-            errorObject.value.visibility = "p-error"
+async function loginClick() {
+    var response = await service_post(CallType.Login, { LoginName : loginObject.value.username, Password: loginObject.value.password})
+    //{status: 1, message: 'Login is successfull!', data: 'true'}
+    console.log(response.data);
+    
+    // authStore.doLogin(loginObject.value.username, loginObject.value.password).then(result => {
+    //     if (!result) {
+    //         errorObject.value.message = "Server error";
+    //         errorObject.value.visibility = "p-error"
+    //     }
+    //     else if (result && result.returnCode === 0) {
+    //         authStore.login();
+    //     }
+    //     else {
+    //         if(result.returnValue.split("|")[0] === "verify"){
+    //             console.log("Verifiy")
+    //             authStore.email = result.returnValue.split("|")[1]
+    //             router.push({name: "Verify"})
+    //         }
+    //         errorObject.value.message = result.returnValue;
+    //         errorObject.value.visibility = "p-error"
 
-        }
-    })
+    //     }
+    // })
 }
 
 function registerClick() {
