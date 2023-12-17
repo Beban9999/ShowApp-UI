@@ -1,7 +1,7 @@
 import { CallType } from "../models/enums/CallType";
 
 export async function service_get(callType: CallType, data: Record<string, any> = {}) {
-    debugger
+    //debugger
     try {
         let apiUrl = 'https://localhost:7201/api/' + callType;
 
@@ -14,7 +14,7 @@ export async function service_get(callType: CallType, data: Record<string, any> 
         }
 
         const response = await fetch(apiUrl);
-        debugger
+        //debugger
         if (response.ok) {
             const result = await response.json();
             console.log(result); 

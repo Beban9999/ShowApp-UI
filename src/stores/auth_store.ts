@@ -1,10 +1,19 @@
 import { defineStore } from "pinia";
 import router from "../router";
 
+interface UserData {
+  FirstName: string,
+  LastName: string,
+  LoginName: string,
+  Email: string,
+  IsActive: boolean,
+  IsDeleted: boolean
+}
+
 export const useAuthenticationStore = defineStore("AuthenticationStore", {
   state: () => ({
     loggedIn: false,
-    email: '',
+    userData : {} as UserData,
   }),
   actions: {
     login() {

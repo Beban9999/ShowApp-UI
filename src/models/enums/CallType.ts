@@ -7,5 +7,6 @@ export enum CallType
     UploadImage = "Image/upload",
     GetImage = "Image/get",
     GetPosts = "Posts/get",
-    InsertPost = "Posts/insert"
+    InsertPost = "Posts/insert",
+    GetUser = "Auth/user"
 }

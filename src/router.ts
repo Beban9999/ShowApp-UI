@@ -43,6 +43,10 @@ const router =  createRouter({
   ],
 })
 
+export function goToMainPage(){
+  router.push({name: 'Login'})
+}
+
 router.beforeEach((to, from, next) => {
 
   const authStore = useAuthenticationStore();

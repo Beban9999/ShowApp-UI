@@ -5,12 +5,14 @@
                 <template #content>
                     <div v-if="availabe">
                         Link is not available
+                        <Divider></Divider>
+                        <Button @click="goToMainPage()">Go to main page</Button>
                     </div>
                     <div v-else>
                         <div class="flex flex-column">
                             <div>
                                 Pleaes verify your email
-                            {{ email }}
+                                {{ email }}
                             </div>
                             <Divider />
                             <div class="flex align-items-center justify-content-center">
@@ -27,41 +29,30 @@
 import { ref } from 'vue';
 import { useAuthenticationStore } from '../stores/auth_store';
 import { sendEmail } from '../services/verifiy_email';
+import { service_get } from '../services/service_call';
+import { CallType } from '../models/enums/CallType';
+import { goToMainPage } from '../router';
 
-const email = useAuthenticationStore().email;
+const email = useAuthenticationStore().userData.Email;
 const userID = ref(-1);
 const availabe = ref(false);
 
-async function checkActive(){
-    try {
-        let apiUrl = 'https://localhost:7201/api/Login/active';
-    
-        // Append the postId as a query parameter if provided
-        if (email) {
-            apiUrl += `?email=${email}`;
-        }
-        const response = await fetch(apiUrl);
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data); // The result from the API
-            return data;
-        } else {
-            console.error('Failed to retrieve posts');
-        }
-    } catch (error) {
-        console.error('An error occurred while retrieving posts:', error);
+service_get(CallType.IsActive, { email: email }).then(response => {
+    var retObject = JSON.parse(response.data)
+    console.log(retObject);
+    availabe.value = retObject.IsActive;
+    if(availabe.value){
+        return
     }
-}
-
-checkActive().then((response : any) =>{
-    availabe.value = response.isActive
-    if(!response.isActive){
-        userID.value = response.userID;
-        sendEmail(email,'https://localhost:7201/api/Login/activateUser?userId='+response.userID)
+    console.log(retObject.IsActive)
+    if (!retObject.isActive) {
+        userID.value = retObject.UserID;
+        sendEmail(email, 'https://localhost:7201/api/Auth/activate?userId=' + userID.value)
     }
 })
-function resendEmail(){
-    sendEmail(email,'https://localhost:7201/api/Login/activateUser?userId='+userID.value)
+
+function resendEmail() {
+    sendEmail(email, 'https://localhost:7201/api/Auth/activate?userId=' + userID.value)
 }
 
 </script>
