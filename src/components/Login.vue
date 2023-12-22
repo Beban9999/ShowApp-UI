@@ -17,48 +17,42 @@ const errorObject = ref({
     message: "",
     visibility: "p-error hidden"
 })
+const activeTab = ref(0)
 
 async function loginClick() {
-    var response = await service_post(CallType.Login, { LoginName : loginObject.value.username, Password: loginObject.value.password})
+    var response = await service_post(CallType.Login, { LoginName: loginObject.value.username, Password: loginObject.value.password })
     //{status: 1, message: 'Login is successfull!', data: 'true'}
     console.log(response.data);
 
-    if(response.data == 'true'){
-        const userData = await service_get(CallType.GetUser, { username : loginObject.value.username});
+    if (response.data == 'true') {
+        const userData = await service_get(CallType.GetUser, { username: loginObject.value.username });
         authStore.userData = JSON.parse(userData.data);
         authStore.login();
     }
-    else if(response.data == 'false' && response.message == 'Activate'){
+    else if (response.data == 'false' && response.message == 'Activate') {
         console.log("Verifiy")
-        const userData = await service_get(CallType.GetUser, { username : loginObject.value.username});
+        const userData = await service_get(CallType.GetUser, { username: loginObject.value.username });
         authStore.userData = JSON.parse(userData.data);
-        router.push({name: "Verify"})
+        router.push({ name: "Verify" })
     }
-    else{
+    else {
         errorObject.value.message = response.message;
         errorObject.value.visibility = "p-error"
     }
 }
 
-function registerClick() {
-    authStore.doRegister(loginObject.value.username, loginObject.value.password, loginObject.value.f_name, loginObject.value.l_name, loginObject.value.email).then(result => {
-        if (!result) {
-            errorObject.value.message = "Server error";
-            errorObject.value.visibility = "p-error"
-        }
-        else if (result && result.returnCode === 0) {
-            console.log("Success")
-        }
-        else {
-            if(result.returnValue.split("|")[0] === "verify"){
-                console.log("Verifiy")
-                router.push({name: "Verify"})
-            }
-            errorObject.value.message = result.returnValue;
-            errorObject.value.visibility = "p-error"
+async function registerClick() {
+    var response = await service_post(CallType.Register, { LoginName: loginObject.value.username, Password: loginObject.value.password, FirstName: loginObject.value.f_name, LastName: loginObject.value.l_name, Email: loginObject.value.email })
+    console.log(response.data)
 
-        }
-    })
+    if (response.data == 'true') {
+        console.log("SUCCESSFULLY REGISTERED")
+        activeTab.value = 0;
+    }
+    else {
+        errorObject.value.message = response.message;
+        errorObject.value.visibility = "p-error"
+    }
 }
 </script>
 
@@ -68,15 +62,14 @@ function registerClick() {
             <Card>
                 <template #content>
 
-                    <TabView>
+                    <TabView v-model:activeIndex="activeTab">
                         <TabPanel header="Login">
                             <div class="flex flex-column card-container green-container gap-3 p-4 align-items-center">
-                                <InputText placeholder="Username" type="text" v-model="loginObject.username" />
-                                <Password v-model="loginObject.password" placeholder="Password" :feedback="false" />
-                                <small id="text-error" :class="errorObject.visibility">{{ errorObject.message || '&nbsp;'
-                                }}</small>
+                                <InputText placeholder="Username" type="text" v-model="loginObject.username" v-on:keyup.enter = 'loginClick' />
+                                <Password v-model="loginObject.password" placeholder="Password" :feedback="false" v-on:keyup.enter = 'loginClick' />
+                                <small id="text-error" :class="errorObject.visibility">{{ errorObject.message || '&nbsp;'}}</small>
                                 <Button @click="loginClick">Login</Button>
-                            </div>      
+                            </div>
                         </TabPanel>
                         <TabPanel header="Register">
                             <div class="flex flex-column card-container green-container gap-3 p-4 align-items-center">
@@ -85,10 +78,9 @@ function registerClick() {
                                 <InputText placeholder="Username" type="text" v-model="loginObject.username" />
                                 <InputText placeholder="Email" type="text" v-model="loginObject.email" />
                                 <Password v-model="loginObject.password" placeholder="Password" :feedback="false" />
-                                <small id="text-error" :class="errorObject.visibility">{{ errorObject.message || '&nbsp;'
-                                }}</small>
+                                <small id="text-error" :class="errorObject.visibility">{{ errorObject.message || '&nbsp;'}}</small>
                                 <Button @click="registerClick">Register</Button>
-                            </div>  
+                            </div>
                         </TabPanel>
                     </TabView>
                 </template>

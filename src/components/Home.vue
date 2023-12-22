@@ -91,7 +91,7 @@ const toggle = (event: any) => {
                             <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" class="mr-2"
                                 shape="circle" />
                             <div class="flex flex-column align">
-                                <span class="font-bold">Amy Elsner</span>
+                                <span class="font-bold">{{ authStore.getFullName }}</span>
                                 <span class="text-sm">Agent</span>
                             </div>
                         </button>
