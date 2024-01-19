@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { usePostsStore } from '../stores/posts_store';
+import router from "../router";
 const fileUploadRef = ref({
     upload() { }, //just for typescript
     files: []
@@ -19,7 +20,6 @@ const errorObject = ref({
     message : "",
     visibility: "p-error"
 })
-const imageUploadUrl = ref("https://localhost:7201/api/Images/");
 
 function insertNewPost() {
 
@@ -45,17 +45,9 @@ function insertNewPost() {
 
     //Insert new post
     const postStore = usePostsStore();
-
-    postStore.insertPost(postObject.value.title, postObject.value.description, postObject.value.price).then(result => {
-        imageUploadUrl.value = "https://localhost:7201/api/Images/" + result
-    }).then(() => {
-        //Insert images for that post
-        if (fileUploadRef?.value && fileUploadRef.value.files.length !== 0) {
-            console.log(fileUploadRef.value.files.length === 0)
-            fileUploadRef.value.upload()
-        }
-    })
-
+    postStore.insertPost(postObject.value.title, postObject.value.description, postObject.value.price, fileUploadRef.value.files).then(() => {
+        router.back();
+    });
 }
 </script>
 
@@ -96,8 +88,8 @@ function insertNewPost() {
                         
                         <div class="flex flex-column gap-2">
                             <div>
-                                <FileUpload name="images" accept="image/*" ref="fileUploadRef" :maxFileSize="1000000"
-                                    :multiple=true :showUploadButton="false" :url="imageUploadUrl"/>
+                                <FileUpload name="images" accept="image/*,video/mp4" ref="fileUploadRef" :maxFileSize="100000000"
+                                    :multiple=true :showUploadButton="false"/>
                                     <small id="text-error" :class="errorObject.visibility">{{ errorObject.message || '&nbsp;' }}</small>
                             </div>
                             <div class="mx-auto mt-6">

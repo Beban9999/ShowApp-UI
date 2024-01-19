@@ -1,59 +1,29 @@
 import { defineStore } from "pinia";
+import { service_get, service_post, service_upload } from "../services/service_call";
+import { CallType } from "../models/enums/CallType";
 
 export const usePostsStore = defineStore("PostsStore", {
     state: () => ({
       posts_list: []
     }),
     actions: {
-        async insertPost(title: string, description: string, price: number){
-            try {
-                const apiUrl = 'https://localhost:7201/api/Posts';
-                const requestBody = {
-                  title: title,
-                  description: description,
-                  price: price
-                };
-            
-                const response = await fetch(apiUrl, {
-                  method: 'POST',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(requestBody),
-                });
-            
-                if (response.ok) {
-                  const data  = await response.json();
-                  console.log(data); // The result from the API
-                  return data;
-                } else {
-                  console.error('Inserting of the new post failed');
-                }
-              } catch (error) {
-                console.error('An error occurred while inserting a post:', error);
-              }
+        async insertPost(title: string, description: string, price: number, files?: any){
+          var response = await service_post(CallType.InsertPost, { Title: title, Description: description, Price: price });
+          var post_id = JSON.parse(response.data);
+          if(post_id != 0) {
+            var resp = await service_upload(post_id, files);
+            return JSON.parse(resp.data);
+          } else {
+            return false;
+          }
         },
         async getPostsById(postId : number | null) {
-          try {
-            let apiUrl = 'https://localhost:7201/api/Posts/posts';
-            
-            // Append the postId as a query parameter if provided
-            if (postId) {
-              apiUrl += `?id=${postId}`;
-            }
-        
-            const response = await fetch(apiUrl);
-        
-            if (response.ok) {
-              const data = await response.json();
-              console.log(data); // The result from the API
-              return data;
-            } else {
-              console.error('Failed to retrieve posts');
-            }
-          } catch (error) {
-            console.error('An error occurred while retrieving posts:', error);
-          }
+          var response = await service_get(CallType.GetPosts, { id : postId});
+          return JSON.parse(response.data);
+        },
+        async getAllPosts() {
+          var response = await service_get(CallType.GetPosts);
+          return JSON.parse(response.data);
         }
     },
     persist:{

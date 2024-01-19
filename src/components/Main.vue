@@ -28,7 +28,7 @@ const onSortChange = (event: { value: { value: any; }; }) => {
         sortKey.value = sortValue;
     }
 };
-postsStore.getPostsById(null).then(result => {
+postsStore.getAllPosts().then(result => {
     console.log(result)
     posts.value = result;
 })
@@ -48,12 +48,12 @@ postsStore.getPostsById(null).then(result => {
             <div class="col-12">
                 <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
                     <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                        :src="slotProps.data.ImageIDs ? `https://localhost:7201/api/Images/${slotProps.data.ImageIDs[0]}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
-                        :alt="slotProps.data.name" />
+                    :src="slotProps.data.Medias && slotProps.data.Medias.length > 0 && slotProps.data.Medias[0].FileType !== 'video/mp4' ? `../../media/${slotProps.data.Id}/${slotProps.data.Medias[0].FileName}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
+                        :alt="slotProps.data.Title" />
                     <div
                         class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                         <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <div class="text-2xl font-bold text-900">{{ slotProps.data.name }}</div>
+                            <div class="text-2xl font-bold text-900">{{ slotProps.data.Title }}</div>
                             <Rating :modelValue="slotProps.data.rating" readonly :cancel="false"></Rating>
                             <div class="flex align-items-center gap-3">
                                 <span class="flex align-items-center gap-2">
@@ -67,7 +67,7 @@ postsStore.getPostsById(null).then(result => {
                             </div>
                         </div>
                         <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <span class="text-2xl font-semibold">${{ slotProps.data.price }}</span>
+                            <span class="text-2xl font-semibold">${{ slotProps.data.Price }}</span>
                             <Button icon="pi pi-shopping-cart" rounded
                                 :disabled="slotProps.data.inventoryStatus === 'OUTOFSTOCK'"></Button>
                         </div>
@@ -88,10 +88,11 @@ postsStore.getPostsById(null).then(result => {
                     </div>
                     <div class="flex flex-column align-items-center gap-3 py-5">
 
-                        <Galleria v-if="slotProps.data.ImageIDs" :value="slotProps.data.ImageIDs" :numVisible="5" :show-indicators-on-item=true
+                        <Galleria v-if="slotProps.data.Medias && slotProps.data.Medias.length > 0 " :value="slotProps.data.Medias" :numVisible="5" :show-indicators-on-item=true
                             containerStyle="max-width: 640px" :showThumbnails="false" :showIndicators="true">
                             <template #item="slotProps">
-                                <img :src="`https://localhost:7201/api/Images/${slotProps.item}`"
+                                <img 
+                                :src="slotProps.item.FileType !== 'video/mp4' ? `../../media/${slotProps.item.PostId}/${slotProps.item.FileName}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
                                     class="shadow-2 border-round" style="height: 33.3vh; width: 14vw;" />
                             </template>
                         </Galleria>
@@ -109,11 +110,11 @@ postsStore.getPostsById(null).then(result => {
 
 
 
-                        <div class="text-2xl font-bold">{{ slotProps.data.name }}</div>
+                        <div class="text-2xl font-bold">{{ slotProps.data.Name }}</div>
                         <Rating :modelValue="slotProps.data.rating" readonly :cancel="false"></Rating>
                     </div>
                     <div class="flex align-items-center justify-content-between">
-                        <span class="text-2xl font-semibold">${{ slotProps.data.price }}</span>
+                        <span class="text-2xl font-semibold">${{ slotProps.data.Price }}</span>
                         <Button icon="pi pi-shopping-cart" rounded
                             :disabled="slotProps.data.inventoryStatus === 'OUTOFSTOCK'"></Button>
                     </div>

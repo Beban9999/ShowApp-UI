@@ -4,8 +4,7 @@ export enum CallType
     Activate = "Auth/activate",
     IsActive = "Auth/isActive",
     Login = "Auth/login",
-    UploadImage = "Image/upload",
-    GetImage = "Image/get",
+    UploadMedia = "Media/Upload",
     GetPosts = "Posts/get",
     InsertPost = "Posts/insert",
     GetUser = "Auth/user"
