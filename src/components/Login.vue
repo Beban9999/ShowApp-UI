@@ -4,6 +4,7 @@ import { useAuthenticationStore } from "../stores/auth_store";
 import { ref } from "vue";
 import { service_get, service_post } from "../services/service_call";
 import { CallType } from "../models/enums/CallType";
+import { RequestStatus } from "../models/enums/RequestStatus";
 
 const loginObject = ref({
     f_name: "",
@@ -20,16 +21,15 @@ const errorObject = ref({
 const activeTab = ref(0)
 
 async function loginClick() {
-    var response = await service_post(CallType.Login, { LoginName: loginObject.value.username, Password: loginObject.value.password })
-    //{status: 1, message: 'Login is successfull!', data: 'true'}
+    var response = await service_post(CallType.Login, { LoginName: loginObject.value.username, Password: loginObject.value.password });
     console.log(response.data);
-
-    if (response.data == 'true') {
+    
+    if (response.status == RequestStatus.Success) {
+        authStore.login(JSON.parse(response.data));
         const userData = await service_get(CallType.GetUser, { username: loginObject.value.username });
         authStore.userData = JSON.parse(userData.data);
-        authStore.login();
     }
-    else if (response.data == 'false' && response.message == 'Activate') {
+    else if (response.status == RequestStatus.Error && response.message == 'Activate') {
         console.log("Verifiy")
         const userData = await service_get(CallType.GetUser, { username: loginObject.value.username });
         authStore.userData = JSON.parse(userData.data);

@@ -12,7 +12,16 @@ export async function service_get(callType: CallType, data: Record<string, any> 
             apiUrl += `?${queryParams}`;
         }
 
-        const response = await fetch(apiUrl);
+        const token = sessionStorage.getItem('token');
+        
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,  
+            },
+        });
+        
         if (response.ok) {
             const result = await response.json();
             console.log(result); 
@@ -29,10 +38,13 @@ export async function service_post(callType: CallType, data: Record<string, any>
     try {
         const apiUrl = 'https://localhost:7201/api/' + callType;
 
+        const token = sessionStorage.getItem('token');
+
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify(data),
         });
@@ -53,21 +65,21 @@ export async function service_upload(postId: any, files: File[]) {
     try {
         const apiUrl = 'https://localhost:7201/api/Media/upload';
 
-        // Create a FormData object
-        const formData = new FormData();
+        const token = sessionStorage.getItem('token');
 
-        // Append post_id to the FormData
+        const formData = new FormData();
         formData.append('Id', postId);
 
-        //Append each file to the FormData
         files.forEach((file, index) => {
             formData.append(`file${index}`, file);
         });
 
-        // Make a POST request using fetch
         const response = await fetch(apiUrl, {
             method: 'POST',
             body: formData,
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
         });
 
         if (response.ok) {

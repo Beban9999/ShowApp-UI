@@ -16,8 +16,9 @@ export const useAuthenticationStore = defineStore("AuthenticationStore", {
     userData : {} as UserData,
   }),
   actions: {
-    login() {
+    login(token : string) {
       this.loggedIn = true;
+      sessionStorage.setItem('token', token);
       router.push({ path: '/home' })
     },
     logout() {
