@@ -46,7 +46,7 @@ function insertNewPost() {
     //Insert new post
     const postStore = usePostsStore();
     postStore.insertPost(postObject.value.title, postObject.value.description, postObject.value.price, fileUploadRef.value.files).then(() => {
-        router.back();
+        router.push({ path: '/home'});
     });
 }
 </script>

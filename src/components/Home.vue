@@ -28,8 +28,9 @@ const menuItems = ref([
         icon: 'pi pi-fw pi-upload',
     },
     {
-        label: 'Quit',
-        icon: 'pi pi-fw pi-power-off'
+        label: 'Chat',
+        icon: 'pi pi-comments',
+        route: '/chat'
     }
 ]);
 

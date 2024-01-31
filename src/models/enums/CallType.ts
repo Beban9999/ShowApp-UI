@@ -7,5 +7,8 @@ export enum CallType
     UploadMedia = "Media/Upload",
     GetPosts = "Posts/get",
     InsertPost = "Posts/insert",
-    GetUser = "Auth/user"
+    GetUser = "Auth/user",
+    GetRooms = "Message/getrooms",
+    GetMessages = "Message/getmessages",
+    InsertMessage = "Message/insertmessage"
 }

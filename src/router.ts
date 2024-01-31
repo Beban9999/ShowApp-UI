@@ -38,6 +38,11 @@ const router =  createRouter({
           path: '/add',
           component: () => import('./components/AddPost.vue'),
         },
+        {
+          name: 'Chat',
+          path: '/chat',
+          component: () => import('./components/Chat.vue')
+        }
       ]
     },
   ],
@@ -47,7 +52,7 @@ export function goToMainPage(){
   router.push({name: 'Login'})
 }
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
 
   const authStore = useAuthenticationStore();
   if(to.name != "Login"){
@@ -57,7 +62,7 @@ router.beforeEach((to, from, next) => {
   }
   else{
     if(authStore.loggedIn == true){
-      authStore.login();
+      authStore.login(authStore.token);
     }
   }
   

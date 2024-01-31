@@ -1,4 +1,6 @@
 import { CallType } from "../models/enums/CallType";
+import { useAuthenticationStore } from "../stores/auth_store";
+const authStore = useAuthenticationStore();
 
 export async function service_get(callType: CallType, data: Record<string, any> = {}) {
     try {
@@ -12,8 +14,8 @@ export async function service_get(callType: CallType, data: Record<string, any> 
             apiUrl += `?${queryParams}`;
         }
 
-        const token = sessionStorage.getItem('token');
-        
+        const token = authStore.token; 
+
         const response = await fetch(apiUrl, {
             method: 'GET',
             headers: {
@@ -38,8 +40,8 @@ export async function service_post(callType: CallType, data: Record<string, any>
     try {
         const apiUrl = 'https://localhost:7201/api/' + callType;
 
-        const token = sessionStorage.getItem('token');
-
+        const token = authStore.token; 
+        
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
@@ -65,7 +67,7 @@ export async function service_upload(postId: any, files: File[]) {
     try {
         const apiUrl = 'https://localhost:7201/api/Media/upload';
 
-        const token = sessionStorage.getItem('token');
+        const token = authStore.token;
 
         const formData = new FormData();
         formData.append('Id', postId);

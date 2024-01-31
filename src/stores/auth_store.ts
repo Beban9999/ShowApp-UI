@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import router from "../router";
 
 interface UserData {
+  UserId: number,
   FirstName: string,
   LastName: string,
   LoginName: string,
@@ -13,12 +14,13 @@ interface UserData {
 export const useAuthenticationStore = defineStore("AuthenticationStore", {
   state: () => ({
     loggedIn: false,
-    userData : {} as UserData,
+    userData: {} as UserData,
+    token : ''
   }),
   actions: {
-    login(token : string) {
+    login(token: string) {
       this.loggedIn = true;
-      sessionStorage.setItem('token', token);
+      this.token = token;
       router.push({ path: '/home' })
     },
     logout() {
@@ -29,71 +31,14 @@ export const useAuthenticationStore = defineStore("AuthenticationStore", {
       if (!this.loggedIn) {
         router.push({ path: '/' })
       }
-    },    
-    // async doLogin(username: string, password: string) {
-    //   try {
-    //     const apiUrl = 'https://localhost:7201/api/Login';
-    //     const requestBody = {
-    //       loginName: username,
-    //       password: password,
-    //     };
-
-    //     const response = await fetch(apiUrl, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(requestBody),
-    //     });
-
-    //     if (response.ok) {
-    //       const data = await response.json();
-    //       console.log(data); // The result from the API
-    //       return data;
-    //     } else {
-    //       console.error('Authentication failed. Check your credentials.');
-    //     }
-    //   } catch (error) {
-    //     console.error('An error occurred while authenticating:', error);
-    //   }
-    // },
-    // async doRegister(username: string, password: string, fname: string, lname: string, email: string) {
-    //   try {
-    //     const apiUrl = 'https://localhost:7201/api/Login/register';
-    //     const requestBody = {
-    //       loginName: username,
-    //       password: password,
-    //       firstName: fname,
-    //       lastName: lname,
-    //       email: email
-    //     }
-
-    //     const response = await fetch(apiUrl, {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify(requestBody),
-    //     });
-
-    //     if (response.ok) {
-    //       const data = await response.json();
-    //       console.log(data); // The result from the API
-    //       return data;
-    //     } else {
-    //       console.error('Authentication failed. Check your credentials.');
-    //     }
-    //   } catch (error) {
-    //     console.error('An error occurred while authenticating:', error);
-    //   }
-    // }
+    },
   },
   getters: {
-    getFullName() : string{
+    getFullName(): string {
       return this.userData.FirstName + " " + this.userData.LastName
     }
   },
   persist: {
-    storage: sessionStorage
+    storage: localStorage
   }
 });
