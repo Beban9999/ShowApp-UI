@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { usePostsStore } from '../stores/posts_store';
+import router from '../router.ts'
 
 const postsStore = usePostsStore();
 const posts = ref([])
@@ -33,6 +34,10 @@ postsStore.getAllPosts().then(result => {
     posts.value = result;
 })
 
+function navigateToRoute(props : any){
+    router.push({ name: 'Profile', params: { id: props.Id } });
+}
+
 </script>
 <template>
     <DataView :value="posts" :sortOrder="sortOrder" :sortField="sortField" :layout="layout" dataKey="id">
@@ -44,40 +49,8 @@ postsStore.getAllPosts().then(result => {
             </div>
         </template>
 
-        <template #list="slotProps">
-            <div class="col-12">
-                <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                    <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                    :src="slotProps.data.Medias && slotProps.data.Medias.length > 0 && slotProps.data.Medias[0].FileType !== 'video/mp4' ? `../../media/${slotProps.data.Id}/${slotProps.data.Medias[0].FileName}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
-                        :alt="slotProps.data.Title" />
-                    <div
-                        class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                        <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <div class="text-2xl font-bold text-900">{{ slotProps.data.Title }}</div>
-                            <Rating :modelValue="slotProps.data.rating" readonly :cancel="false"></Rating>
-                            <div class="flex align-items-center gap-3">
-                                <span class="flex align-items-center gap-2">
-                                    <i class="pi pi-tag"></i>
-                                    <span class="font-semibold">{{ slotProps.data.category }}</span>
-                                </span>
-                                <Tag :value="slotProps.data.inventoryStatus"></Tag>
-                            </div>
-                            <div>
-                                {{ slotProps.data.Description }}
-                            </div>
-                        </div>
-                        <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <span class="text-2xl font-semibold">${{ slotProps.data.Price }}</span>
-                            <Button icon="pi pi-shopping-cart" rounded
-                                :disabled="slotProps.data.inventoryStatus === 'OUTOFSTOCK'"></Button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </template>
-
         <template #grid="slotProps">
-            <div class="col-12  lg:col-12 xl:col-3 p-2">
+            <div class="col-12  lg:col-12 xl:col-3 p-2" @click="navigateToRoute(slotProps.data)">
                 <div class="p-4 border-1 surface-border surface-card border-round">
                     <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                         <div class="flex align-items-center gap-2">
@@ -121,6 +94,39 @@ postsStore.getAllPosts().then(result => {
                 </div>
             </div>
         </template>
+        <template #list="slotProps">
+            <div class="col-12">
+                <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+                    <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                    :src="slotProps.data.Medias && slotProps.data.Medias.length > 0 && slotProps.data.Medias[0].FileType !== 'video/mp4' ? `../../media/${slotProps.data.Id}/${slotProps.data.Medias[0].FileName}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
+                        :alt="slotProps.data.Title" />
+                    <div
+                        class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                        <div class="flex flex-column align-items-center sm:align-items-start gap-3">
+                            <div class="text-2xl font-bold text-900">{{ slotProps.data.Title }}</div>
+                            <Rating :modelValue="slotProps.data.rating" readonly :cancel="false"></Rating>
+                            <div class="flex align-items-center gap-3">
+                                <span class="flex align-items-center gap-2">
+                                    <i class="pi pi-tag"></i>
+                                    <span class="font-semibold">{{ slotProps.data.category }}</span>
+                                </span>
+                                <Tag :value="slotProps.data.inventoryStatus"></Tag>
+                            </div>
+                            <div>
+                                {{ slotProps.data.Description }}
+                            </div>
+                        </div>
+                        <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                            <span class="text-2xl font-semibold">${{ slotProps.data.Price }}</span>
+                            <Button icon="pi pi-shopping-cart" rounded
+                                :disabled="slotProps.data.inventoryStatus === 'OUTOFSTOCK'"></Button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        
     </DataView>
 </template>
 <style scoped>

@@ -38,7 +38,8 @@ const submenuItems = ref([
     { separator: true },
     {
         label: 'View profile',
-        icon: 'pi pi-fw pi-user'
+        icon: 'pi pi-fw pi-user',
+        route: '/profile'
     },
     {
         label: 'Edit profile',
@@ -97,11 +98,16 @@ const toggle = (event: any) => {
                             </div>
                         </button>
                     </template>
-                    <template #item="{ item, label, props }">
-                        <a class="flex" v-bind="props.action">
-                            <span v-bind="props.icon" />
-                            <span v-bind="props.label">{{ label }}</span>
-                            <Badge v-if="item.badge" class="ml-auto" :value="item.badge" />
+                    <template #item="{ item, props }">
+                        <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
+                            <a v-ripple :href="href" v-bind="props.action" @click="navigate">
+                                <span :class="item.icon" />
+                                <span class="ml-2">{{ item.label }}</span>
+                            </a>
+                        </router-link>
+                        <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
+                            <span :class="item.icon" />
+                            <span class="ml-2">{{ item.label }}</span>
                         </a>
                     </template>
                     <template #end>
