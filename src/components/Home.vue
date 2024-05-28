@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useAuthenticationStore } from '../stores/auth_store';
+import { ChatService } from '../services/chat_service';
 const authStore = useAuthenticationStore();
+var unreadMessages = 0;
+var cs = new ChatService(authStore.userData.LoginName, (response: number) => {
+    unreadMessages = response;
+    console.log(unreadMessages);
+});
 
 const menuItems = ref([
     {
@@ -49,6 +55,7 @@ const submenuItems = ref([
 ])
 
 function logoutClick() {
+    cs.unsubscribe();
     authStore.logout();
 }
 function profileClick(){

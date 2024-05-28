@@ -10,5 +10,6 @@ export enum CallType
     GetUser = "Auth/user",
     GetRooms = "Message/getrooms",
     GetMessages = "Message/getmessages",
+    GetUnreadMessages = "Message/getunreadmessages",
     InsertMessage = "Message/insertmessage"
 }

@@ -15,7 +15,8 @@ export const useAuthenticationStore = defineStore("AuthenticationStore", {
   state: () => ({
     loggedIn: false,
     userData: {} as UserData,
-    token : ''
+    token : '',
+    unreadMessages: 0
   }),
   actions: {
     login(token: string) {
