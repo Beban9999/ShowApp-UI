@@ -45,86 +45,86 @@ function navigateToRoute(props : any){
             <div class="flex justify-content-end gap-3">
                 <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By Price"
                     @change="onSortChange($event)" />
-                <DataViewLayoutOptions v-model="layout" />
+                <!-- <DataViewLayoutOptions v-model="layout" /> -->
             </div>
         </template>
 
         <template #grid="slotProps">
-            <div class="col-12  lg:col-12 xl:col-3 p-2" @click="navigateToRoute(slotProps.data)">
-                <div class="p-4 border-1 surface-border surface-card border-round">
-                    <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                        <div class="flex align-items-center gap-2">
-                            <i class="pi pi-tag"></i>
-                            <span class="font-semibold">{{ slotProps.data.category }}</span>
+            <!-- <div class="col-12  lg:col-12 xl:col-3 p-2" @click="console.log(slotProps);navigateToRoute(slotProps.key)">
+                <div v-for="(item, index) in slotProps.items" :key="index" class="col-12"> -->
+            <div class="grid grid-nogutter">
+                <div v-for="(item, index) in slotProps.items" :key="index" class="col-12 sm:col-6 md:col-4 xl:col-6 p-2">
+                    <div class="p-4 border-1 surface-border surface-card border-round" @click="console.log(item);navigateToRoute(item)">
+                        <div class="flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="flex align-items-center gap-2">
+                                <i class="pi pi-tag"></i>
+                                <span class="font-semibold">{{ item.Type }}</span>
+                            </div>
+                            <Tag :value="item.inventoryStatus"></Tag>
                         </div>
-                        <Tag :value="slotProps.data.inventoryStatus"></Tag>
-                    </div>
-                    <div class="flex flex-column align-items-center gap-3 py-5">
-
-                        <Galleria v-if="slotProps.data.Medias && slotProps.data.Medias.length > 0 " :value="slotProps.data.Medias" :numVisible="5" :show-indicators-on-item=true
-                            containerStyle="max-width: 640px" :showThumbnails="false" :showIndicators="true">
-                            <template #item="slotProps">
-                                <img 
-                                :src="slotProps.item.FileType !== 'video/mp4' ? `../../media/${slotProps.item.PostId}/${slotProps.item.FileName}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
-                                    class="shadow-2 border-round" style="height: 33.3vh; width: 14vw;" />
-                            </template>
-                        </Galleria>
-
-                        <Galleria v-else
-                            :value="['https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png']"
-                            :numVisible="5" containerStyle="max-width: 640px" :showThumbnails="false"
-                            :showIndicators="false">
-                            <template #item="slotProps">
-                                <img class="shadow-2 border-round" style="height: 33.3vh; width: 14vw;"
-                                    :src="slotProps.item" />
-                            </template>
-                        </Galleria>
-
-
-
-
-                        <div class="text-2xl font-bold">{{ slotProps.data.Name }}</div>
-                        <Rating :modelValue="slotProps.data.rating" readonly :cancel="false"></Rating>
-                    </div>
-                    <div class="flex align-items-center justify-content-between">
-                        <span class="text-2xl font-semibold">${{ slotProps.data.Price }}</span>
-                        <Button icon="pi pi-shopping-cart" rounded
-                            :disabled="slotProps.data.inventoryStatus === 'OUTOFSTOCK'"></Button>
+                        <div class="flex flex-column align-items-center gap-3 py-5">
+    
+                            <Galleria v-if="item.Medias && item.Medias.length > 0 " :value="item.Medias" :numVisible="5" :show-indicators-on-item=true
+                                containerStyle="max-width: 640px" :showThumbnails="false" :showIndicators="true">
+                                <template #item="slotProps">
+                                    <img 
+                                    :src="slotProps.item.FileType !== 'video/mp4' ? `../../media/${slotProps.item.PostId}/${slotProps.item.FileName}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
+                                        class="shadow-2 border-round" style="height: 33.3vh; width: 14vw;" />
+                                </template>
+                            </Galleria>
+    
+                            <Galleria v-else
+                                :value="['https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png']"
+                                :numVisible="5" containerStyle="max-width: 640px" :showThumbnails="false"
+                                :showIndicators="false">
+                                <template #item="slotProps">
+                                    <img class="shadow-2 border-round" style="height: 33.3vh; width: 14vw;"
+                                        :src="slotProps.item" />
+                                </template>
+                            </Galleria>
+    
+                            <div class="text-2xl font-bold">{{ item.Title }}</div>
+                            <div class="text-lg font-medium text-900 mt-1">{{ item.Description }}</div>
+                        </div>
+                        <div class="flex align-items-center justify-content-between">
+                            <span class="text-2xl font-semibold">${{ item.Price }}</span>
+                        </div>
                     </div>
                 </div>
+     
             </div>
         </template>
-        <template #list="slotProps">
+        <!-- <template #list="slotProps">
             <div class="col-12">
                 <div class="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
                     <img class="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
-                    :src="slotProps.data.Medias && slotProps.data.Medias.length > 0 && slotProps.data.Medias[0].FileType !== 'video/mp4' ? `../../media/${slotProps.data.Id}/${slotProps.data.Medias[0].FileName}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
-                        :alt="slotProps.data.Title" />
+                    :src="slotProps.Medias && slotProps.Medias.length > 0 && slotProps.Medias[0].FileType !== 'video/mp4' ? `../../media/${slotProps.Id}/${slotProps.Medias[0].FileName}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
+                        :alt="slotProps.Title" />
                     <div
                         class="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                         <div class="flex flex-column align-items-center sm:align-items-start gap-3">
-                            <div class="text-2xl font-bold text-900">{{ slotProps.data.Title }}</div>
-                            <Rating :modelValue="slotProps.data.rating" readonly :cancel="false"></Rating>
+                            <div class="text-2xl font-bold text-900">{{ slotProps.Title }}</div>
+                            <Rating :modelValue="slotProps.rating" readonly :cancel="false"></Rating>
                             <div class="flex align-items-center gap-3">
                                 <span class="flex align-items-center gap-2">
                                     <i class="pi pi-tag"></i>
-                                    <span class="font-semibold">{{ slotProps.data.category }}</span>
+                                    <span class="font-semibold">{{ slotProps.category }}</span>
                                 </span>
-                                <Tag :value="slotProps.data.inventoryStatus"></Tag>
+                                <Tag :value="slotProps.inventoryStatus"></Tag>
                             </div>
                             <div>
-                                {{ slotProps.data.Description }}
+                                {{ slotProps.Description }}
                             </div>
                         </div>
                         <div class="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                            <span class="text-2xl font-semibold">${{ slotProps.data.Price }}</span>
+                            <span class="text-2xl font-semibold">${{ slotProps.Price }}</span>
                             <Button icon="pi pi-shopping-cart" rounded
-                                :disabled="slotProps.data.inventoryStatus === 'OUTOFSTOCK'"></Button>
+                                :disabled="slotProps.inventoryStatus === 'OUTOFSTOCK'"></Button>
                         </div>
                     </div>
                 </div>
             </div>
-        </template>
+        </template> -->
 
         
     </DataView>
