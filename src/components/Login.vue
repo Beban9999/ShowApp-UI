@@ -167,8 +167,9 @@ function switchRegisterLogin(){
     color: white;
     background-color: #1f2937;
     border-color: #1f2937;
-    margin-top: 15%;
+    margin-top: 5%;
     min-width: 200px;
+    width: 250px;
 
 }
 
