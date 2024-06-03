@@ -8,7 +8,7 @@
     <div class="post-media">
       <h3>Post Medias:</h3>
       <div id="post-medias">
-        <img v-for="(media, index) in artistObject?.PostMedias" :key="index" :src="`../../media/${media.PostId}/${media.FileName}`" :alt="media.FileName" />
+        <Image v-for="(media, index) in artistObject?.PostMedias" :src="`../../media/${media.PostId}/${media.FileName}`"  alt="Image" width="250" preview />
       </div>
     </div>
   </div>
@@ -38,6 +38,16 @@ interface Artist {
   PostMedias: PostMedia[];
 }
 
+const responsiveOptions = ref([
+    {
+        breakpoint: '1300px',
+        numVisible: 4
+    },
+    {
+        breakpoint: '575px',
+        numVisible: 1
+    }
+]);
 const id = ref();
 const route = useRoute();
 const artistObject = ref<Artist | null>(null);

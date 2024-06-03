@@ -5,7 +5,7 @@ import App from './App.vue'
 import PrimeVue from 'primevue/config';
 import { createPinia } from 'pinia';
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import 'primevue/resources/themes/lara-light-teal/theme.css'
+import 'primevue/resources/themes/lara-dark-purple/theme.css'
 import 'primeflex/primeflex.css'
 import 'primeicons/primeicons.css'
 import ToastService from 'primevue/toastservice';
