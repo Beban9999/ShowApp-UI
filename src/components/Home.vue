@@ -121,9 +121,9 @@ const toggle = (event: any) => {
                 </Menu>
             </template>
         </Menubar>
-
     </div>
     <router-view></router-view>
+    <div>FOOTER</div>
 </template>
 
 <style scoped>
