@@ -46,10 +46,14 @@ function navigateToRoute(props : any){
     <DataView :value="posts" :sortOrder="sortOrder" :sortField="sortField" :layout="layout" dataKey="id">
         <template #header>
             <div class="flex justify-content-center gap-3">
+                <Calendar v-model="icondisplay" showIcon iconDisplay="input" />
                 <InputText type="text" v-model="value" />
+                <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Type"
+                    @change="onSortChange($event)" />
+                <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Genre"
+                    @change="onSortChange($event)" />
                 <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By Price"
                     @change="onSortChange($event)" />
-            
             </div>
         </template>
 

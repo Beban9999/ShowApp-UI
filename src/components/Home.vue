@@ -6,27 +6,27 @@ const authStore = useAuthenticationStore();
 const menuItems = ref([
     {
         label: 'Home',
-        icon: 'pi pi-fw pi-file',
+        // icon: 'pi pi-fw pi-file',
         route: '/main'
     },
     {
         label: 'Add',
-        icon: 'pi pi-fw pi-pencil',
+        // icon: 'pi pi-fw pi-pencil',
         route: '/add'
     },
-    {
-        label: 'Users',
-        icon: 'pi pi-fw pi-user',
-    },
-    {
-        label: 'Events',
-        icon: 'pi pi-fw pi-calendar',
-        route: '/page2'
-    },
-    {
-        label: 'Upload',
-        icon: 'pi pi-fw pi-upload',
-    },
+    // {
+    //     label: 'Users',
+    //     icon: 'pi pi-fw pi-user',
+    // },
+    // {
+    //     label: 'Events',
+    //     icon: 'pi pi-fw pi-calendar',
+    //     route: '/page2'
+    // },
+    // {
+    //     label: 'Upload',
+    //     icon: 'pi pi-fw pi-upload',
+    // },
     {
         label: 'Chat',
         icon: 'pi pi-comments',
@@ -66,21 +66,22 @@ const toggle = (event: any) => {
     <div class="card relative z-2">
         <Menubar :model="menuItems" class="p-1">
             <template #start>
-
+                <b class="mx-1">MusicConnect</b>
             </template>
             <template #item="{ label, item, props, root, hasSubmenu }">
-                <router-link v-if="item.route" v-slot="routerProps" :to="item.route">
-                    <a :href="routerProps.href" v-bind="props.action" style="text-decoration: none; color: inherit;">
+                
+                    <router-link v-if="item.route" v-slot="routerProps" :to="item.route">
+                        <a :href="routerProps.href" v-bind="props.action" style="text-decoration: none; color: inherit;">
+                            <span v-bind="props.icon" />
+                            <span v-bind="props.label">{{ label }}</span>
+                        </a>
+                    </router-link>
+                    <a v-else :href="item.url" :target="item.target" v-bind="props.action">
                         <span v-bind="props.icon" />
                         <span v-bind="props.label">{{ label }}</span>
+                        <span :class="[hasSubmenu && (root ? 'pi pi-fw pi-angle-down' : 'pi pi-fw pi-angle-right')]"
+                            v-bind="props.submenuicon" />
                     </a>
-                </router-link>
-                <a v-else :href="item.url" :target="item.target" v-bind="props.action">
-                    <span v-bind="props.icon" />
-                    <span v-bind="props.label">{{ label }}</span>
-                    <span :class="[hasSubmenu && (root ? 'pi pi-fw pi-angle-down' : 'pi pi-fw pi-angle-right')]"
-                        v-bind="props.submenuicon" />
-                </a>
             </template>
             <template #end>
                 <Button icon="pi pi-cog" rounded aria-label="Search" @click="toggle" aria-haspopup="true"
