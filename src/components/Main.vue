@@ -36,7 +36,11 @@ const onSortChange = (event: { value: { value: any; }; }) => {
 
 arstisStore.getAllArtists().then(result => {
     console.log(result);
+
     artists.value = result.filter((artist: { UserId: number; }) => artist.UserId !== userId);
+    for(var i = 0; i < 5; i++){
+        artists.value.push(...result.filter((artist: { UserId: number; }) => artist.UserId !== userId))
+    }
 })
 
 function goToProfile(id : any){
@@ -68,7 +72,7 @@ function chat(receiverId: number){
             <!-- <div class="col-12  lg:col-12 xl:col-3 p-2" @click="console.log(slotProps);navigateToRoute(slotProps.key)">
                 <div v-for="(item, index) in slotProps.items" :key="index" class="col-12"> -->
             <div class="grid grid-nogutter align-items-center justify-content-center" style="background-color:#111827">
-                <div v-for="item in slotProps" class="col-12 sm:col-4 md:col-3 xl:col-2 p-2">
+                <div v-for="item in slotProps.items" class="col-12 sm:col-4 md:col-3 xl:col-2 p-2">
                     <div class="p-4 border-1 surface-border surface-card border-round">
                         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                             <div class="flex align-items-center gap-2">
@@ -79,7 +83,7 @@ function chat(receiverId: number){
                                 <Tag :value="genre">{{ genre }}</Tag>
                             </div>
                         </div>
-                        <div class="flex flex-column align-items-center gap-3 py-5" @click="console.log(item);goToProfile(item.UserId)">
+                        <div class="flex flex-column align-items-center gap-3 py-5" @click="console.log(item, slotProps);goToProfile(item.UserId)">
                             <img :src="item.Avatar !== '' ? `../../media/${item.UserId}/${item.Avatar}` : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png'"
 
                                 class="shadow-2 border-round w-full h-12rem"/>

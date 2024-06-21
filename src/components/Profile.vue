@@ -24,9 +24,34 @@ const authStore = useAuthenticationStore();
 id.value = route.params.id;
 const userId = authStore.userData.UserId;
 
+const imgData = ref([])
+
 onMounted(async () => {
     try {
       artistObject.value = await artistStore.getArtistData(id.value);
+      console.log(artistObject.value)
+      const imageDetails = [];
+
+      // Traverse the data to find the UserId and FileName
+      [artistObject.value].forEach(user => {
+          if (user.Posts) {
+              user.Posts.forEach(post => {
+                  if (post.Media) {
+                      post.Media.forEach(media => {
+                          // Collecting UserId and FileName
+                          imageDetails.push({
+                              UserId: media.UserId,
+                              FileName: media.FileName
+                          });
+                      });
+                  }
+              });
+          }
+      });
+
+      // Log the extracted image details to the console
+      console.log(imageDetails);
+      imgData.value = imageDetails
     } catch (error) {
         console.error('Failed to fetch artist data:', error);
     }
@@ -71,7 +96,24 @@ function addPost() {
 
     <Divider />
 
-    
+    <div class="w-full flex min-h-max">
+      <div class="w-5 card-div mr-3 p-3 min-w-min">
+        <b class="m">Gallery</b>
+        <div >
+          <Image :class="$style.img" v-for="(media, index) in imgData " :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
+        </div>
+      </div>
+      <div class="w-9 card-div p-3">
+        <b>Posts</b>
+        <div>
+          <h3 v-for="post in artistObject?.Posts" >
+           <span> {{ post.Description }} {{ post.CreatedDate }}</span> 
+           <br>
+          <Image :class="$style.img" v-for="media in post.Media" :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
+          </h3>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
