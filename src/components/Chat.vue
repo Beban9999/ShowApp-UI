@@ -1,18 +1,34 @@
 <script setup lang="ts">
 import { register } from 'vue-advanced-chat'
 import { useChatStore } from '../stores/chat_store'
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useAuthenticationStore } from '../stores/auth_store';
 import { service_post } from '../services/service_call';
 import { CallType } from '../models/enums/CallType';
 import { Message } from '../models/chat/Message'
+import { useRoute } from 'vue-router';
 
 const authStore = useAuthenticationStore();
 const chatStore = useChatStore();
 chatStore.loadRooms();
 const chat =  ref<Array<any>>([]);
 const rooms = chatStore.getRooms;
+const route = useRoute();
+const userId = authStore.userData.UserId;
+var currentRoomId;
+
 register()
+
+onMounted(() => {
+	debugger
+	var receiverId = route.params.receiverId;
+	debugger
+	if((receiverId != '' || receiverId != undefined) && receiverId != userId.toString()){
+		chatStore.createRoom(parseInt(receiverId.toString())).then((response) => {
+			currentRoomId = response;
+		});
+	}
+})
 
 const chatRooms = ref({
 	currentUserId: authStore.userData.UserId.toString(),

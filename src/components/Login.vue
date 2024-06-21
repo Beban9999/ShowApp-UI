@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import router from "../router";
 import { useAuthenticationStore } from "../stores/auth_store";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref } from "vue";
 import { service_get, service_post } from "../services/service_call";
 import { CallType } from "../models/enums/CallType";
 import { RequestStatus } from "../models/enums/RequestStatus";
@@ -21,8 +21,6 @@ const errorObject = ref({
 const activeTab = ref(0)
 
 async function loginClick() {
-
-    
     console.log("AAAA", getElementWidth());
     var response = await service_post(CallType.Login, { LoginName: loginObject.value.username, Password: loginObject.value.password });
     console.log(response.data);

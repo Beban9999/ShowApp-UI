@@ -1,72 +1,10 @@
-<template>
-  <div class="m-2">
-    <!-- Should be changed to image (cover) -->
-    <div class="w-40rem cover-img mb-2 flex justify-content-center" style="overflow: hidden">
-      <Image :class="$style.cover_img" width="2200" :src="'../../media/' + artistObject?.PostMedias[0].PostId+'/'+artistObject?.PostMedias[0].FileName"></Image>
-    </div>
-    <!-- <div style="">
-    </div> -->
-    <div class="flex ml-5 min-w-min">
-      <Image width="120" :src="'../../media/' + artistObject?.PostMedias[0].PostId+'/'+artistObject?.PostMedias[0].FileName"></Image>
-      <div class="mx-5">
-        <h2 style="white-space: nowrap;">{{ artistObject?.Name }}</h2>
-        <p><span>{{ artistObject?.Type }}</span></p>
-        <p><span>{{ artistObject?.Description }}</span></p>
-      </div>
-
-      <div class="w-full justify-content-end flex" >
-        <div>
-          <Button :class="$style.button"><b>Follow</b></Button>
-          <Button  class="ml-2" :class="$style.button"><b>Message</b></Button>
-        </div>
-      </div>
-      
-    </div>
-    <div class="w-full h-2rem flex justify-content-start gap-2" >
-      <Tag :class="$style.tag"><span>{{ artistObject?.Genre }}</span></Tag>
-      <Tag :class="$style.tag"><span>{{ artistObject?.Location }}</span></Tag>
-    </div>
-
-    <Divider />
-
-    <div class="w-full flex min-h-max">
-      <div class="w-5 card-div mr-3 p-3 min-w-max">
-        <b class="m">Gallery</b>
-        <div >
-          <Image :class="$style.img" v-for="(media, index) in artistObject?.PostMedias" :src="`../../media/${media.PostId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
-        </div>
-        <!-- TEST FOR MORE IMAGES, not needed in the future. -->
-        <div >
-          <Image :class="$style.img" v-for="(media, index) in artistObject?.PostMedias" :src="`../../media/${media.PostId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
-        </div>
-      </div>
-      <div class="w-9 card-div p-3">
-        <b>Posts</b>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-import { ref } from 'vue';
-import { service_get } from '../services/service_call';
-import { CallType } from '../models/enums/CallType';
-
-interface PostMedia {
-  PostId: number;
-  FileName: string;
-  FileType: string;
-}
-
-interface Artist {
-  Name: string;
-  Type: string;
-  Genre: string;
-  Description: string;
-  Location: string;
-  PostMedias: PostMedia[];
-}
+import { Ref, onMounted, ref } from 'vue';
+import { useArtistStore } from '../stores/artist_store';
+import { Artist } from '../models/artist/Artist';
+import router from '../router';
+import { useAuthenticationStore } from '../stores/auth_store';
 
 const responsiveOptions = ref([
     {
@@ -80,16 +18,63 @@ const responsiveOptions = ref([
 ]);
 const id = ref();
 const route = useRoute();
-const artistObject = ref<Artist | null>(null);
-
-
+const artistObject: Ref<Artist | null> = ref(null);
+const artistStore = useArtistStore();
+const authStore = useAuthenticationStore();
 id.value = route.params.id;
+const userId = authStore.userData.UserId;
 
-service_get(CallType.ArtistData, { ArtistId: id.value }).then(response => {
-  artistObject.value = JSON.parse(response.data);
-  console.log(artistObject.value?.PostMedias)
-})
+onMounted(async () => {
+    try {
+      artistObject.value = await artistStore.getArtistData(id.value);
+    } catch (error) {
+        console.error('Failed to fetch artist data:', error);
+    }
+});
+
+function addPost() {
+  router.push({ name: 'AddPost'});
+}
 </script>
+
+<template>
+  <div class="m-2">
+    <!-- Should be changed to image (cover) -->
+    <div class="w-40rem cover-img mb-2 flex justify-content-center" style="overflow: hidden">
+      <!-- <Image :class="$style.cover_img" width="2200" :src="'../../media/' + artistObject?.PostMedias[0].PostId+'/'+artistObject?.PostMedias[0].FileName"></Image> -->
+    </div>
+    <!-- <div style="">
+    </div> -->
+    <div class="flex ml-5 min-w-min">
+      <Image width="120" :src="'../../media/' + artistObject?.UserId + '/' + artistObject?.Avatar"></Image>
+      <div class="mx-5">
+        <h2 style="white-space: nowrap;">{{ artistObject?.Name }}</h2>
+        <p><span>{{ artistObject?.Type }}</span></p>
+        <p><span>{{ artistObject?.Description }}</span></p>
+      </div>
+
+      <div class="w-full justify-content-end flex" >
+        <div>
+          <Button v-if="artistObject?.UserId==userId" :class="$style.button" @click="addPost()"><b>Add post</b></Button>
+          <Button :class="$style.button"><b>Follow</b></Button>
+          <Button  class="ml-2" :class="$style.button"><b>Message</b></Button>
+        </div>
+      </div>
+      
+    </div>
+    <div class="w-full h-2rem flex justify-content-start gap-2" >
+      <Tag :class="$style.tag"><span>{{ artistObject?.Location }}</span></Tag>
+      <div v-for="genre in artistObject?.Genres" :key="genre">
+        <Tag :value="genre">{{ genre }}</Tag>
+      </div>
+    </div>
+
+    <Divider />
+
+    
+  </div>
+</template>
+
 
 <style scoped>
 .cover-img{

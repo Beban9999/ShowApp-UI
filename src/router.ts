@@ -34,19 +34,24 @@ const router =  createRouter({
           component: () => import('./components/Page2.vue'),
         },
         {
-          name: 'Add',
-          path: '/add',
-          component: () => import('./components/AddPost.vue'),
+          name: 'Become an artist',
+          path: '/becomeartist',
+          component: () => import('./components/BecomeArtist.vue'),
         },
         {
           name: 'Chat',
-          path: '/chat',
+          path: '/chat/:receiverId',
           component: () => import('./components/Chat.vue')
         },
         {
           name: 'Profile',
           path: '/profile/:id',
           component: () => import('./components/Profile.vue')
+        },
+        {
+          name: 'AddPost',
+          path: '/addpost',
+          component: () => import('./components/AddPost.vue')
         }
       ]
     },

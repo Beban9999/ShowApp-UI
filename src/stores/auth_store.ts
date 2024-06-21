@@ -7,6 +7,8 @@ interface UserData {
   LastName: string,
   LoginName: string,
   Email: string,
+  Avatar: string,
+  IsArtist: boolean;
   IsActive: boolean,
   IsDeleted: boolean
 }

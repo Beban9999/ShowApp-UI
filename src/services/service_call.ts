@@ -63,14 +63,19 @@ export async function service_post(callType: CallType, data: Record<string, any>
     }
 }
 
-export async function service_upload(postId: any, files: File[]) {
+export async function service_upload_media(userId: any, files: File[], isProfile: boolean, postId?: number) {
     try {
         const apiUrl = 'https://localhost:7201/api/Media/upload';
 
         const token = authStore.token;
 
         const formData = new FormData();
-        formData.append('Id', postId);
+        formData.append('Id', userId);
+        formData.append('IsProfile', JSON.stringify(isProfile));
+
+        if(postId != undefined && postId != 0){
+            formData.append('PostId', postId.toString());
+        } 
 
         files.forEach((file, index) => {
             formData.append(`file${index}`, file);

@@ -2,17 +2,13 @@
 import { ref } from 'vue';
 import { useAuthenticationStore } from '../stores/auth_store';
 const authStore = useAuthenticationStore();
+const userId = authStore.userData.UserId;
 
 const menuItems = ref([
     {
         label: 'Home',
         // icon: 'pi pi-fw pi-file',
         route: '/main'
-    },
-    {
-        label: 'Add',
-        // icon: 'pi pi-fw pi-pencil',
-        route: '/add'
     },
     // {
     //     label: 'Users',
@@ -30,16 +26,23 @@ const menuItems = ref([
     {
         label: 'Chat',
         icon: 'pi pi-comments',
-        route: '/chat'
+        route: `/chat/${userId}`
     }
 ]);
 
+if (!authStore.userData.IsArtist) {
+    menuItems.value.splice(1, 0, {
+        label: 'Become an artist',
+        // icon: 'pi pi-fw pi-pencil',
+        route: '/BecomeArtist'
+    });
+}
 const submenuItems = ref([
     { separator: true },
     {
         label: 'View profile',
         icon: 'pi pi-fw pi-user',
-        route: '/profile'
+        route: `/profile/${userId}`
     },
     {
         label: 'Edit profile',
@@ -91,7 +94,7 @@ const toggle = (event: any) => {
                     <template #start>
                         <button @click="profileClick"
                             class="w-full p-link flex align-items-center p-2 pl-3 text-color hover:surface-200 border-noround">
-                            <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" class="mr-2"
+                            <Avatar :image="`../../media/${authStore.userData.UserId}/${authStore.userData.Avatar}`" class="mr-2"
                                 shape="circle" />
                             <div class="flex flex-column align">
                                 <span class="font-bold">{{ authStore.getFullName }}</span>
