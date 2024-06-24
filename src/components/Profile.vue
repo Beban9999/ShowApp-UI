@@ -96,21 +96,28 @@ function addPost() {
 
     <Divider />
 
-    <div class="w-full flex min-h-max">
-      <div class="w-5 card-div mr-3 p-3 min-w-min">
+    <div class="w-full flex">
+      <div class="card-div mr-3 p-3" style="min-width: 520px; max-width: 520px; min-height: 520px; max-height: 520px">
         <b class="m">Gallery</b>
         <div >
-          <Image :class="$style.img" v-for="(media, index) in imgData " :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
+          <Image :class="$style.img" v-for="(media, index) in imgData.splice(0,4) " :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
         </div>
       </div>
       <div class="w-9 card-div p-3">
         <b>Posts</b>
         <div>
-          <h3 v-for="post in artistObject?.Posts" >
-           <span> {{ post.Description }} {{ post.CreatedDate }}</span> 
+          <div v-for="post in artistObject?.Posts" class="card-div px-3 mb-2 pb-3" style="min-width: 520px;">
+            <div class="flex w-full align-items-start">
+                <p class="w-full">Post title</p>
+                <div class="w-full flex justify-content-end">
+                  <p style="position:relative; ">{{ post.CreatedDate }}</p>
+                </div>
+                  
+            </div>
+           <span> {{ post.Description }}</span> 
            <br>
           <Image :class="$style.img" v-for="media in post.Media" :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
-          </h3>
+          </div>
         </div>
       </div>
     </div>
