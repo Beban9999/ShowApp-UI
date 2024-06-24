@@ -5,6 +5,7 @@ import { onMounted, ref } from "vue";
 import { service_get, service_post } from "../services/service_call";
 import { CallType } from "../models/enums/CallType";
 import { RequestStatus } from "../models/enums/RequestStatus";
+import { useArtistStore } from "../stores/artist_store";
 
 const loginObject = ref({
     f_name: "",
@@ -14,6 +15,7 @@ const loginObject = ref({
     password: "",
 })
 const authStore = useAuthenticationStore();
+const artistStore = useArtistStore();
 const errorObject = ref({
     message: "",
     visibility: "p-error hidden"
@@ -27,14 +29,13 @@ async function loginClick() {
     
     if (response.status == RequestStatus.Success) {
         authStore.login(JSON.parse(response.data));
-        const userData = await service_get(CallType.GetUser, { username: loginObject.value.username });
-        authStore.userData = JSON.parse(userData.data);
+        await artistStore.getUserData(loginObject.value.username);
+        router.push({ path: '/home' });
     }
     else if (response.status == RequestStatus.Error && response.message == 'Activate') {
         console.log("Verifiy")
-        const userData = await service_get(CallType.GetUser, { username: loginObject.value.username });
-        authStore.userData = JSON.parse(userData.data);
-        router.push({ name: "Verify" })
+        await artistStore.getUserData(loginObject.value.username);
+        router.push({ name: "Verify" });
     }
     else {
         errorObject.value.message = response.message;

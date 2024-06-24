@@ -10,33 +10,38 @@ import { useRoute } from 'vue-router';
 
 const authStore = useAuthenticationStore();
 const chatStore = useChatStore();
-chatStore.loadRooms();
 const chat =  ref<Array<any>>([]);
-const rooms = chatStore.getRooms;
 const route = useRoute();
+
 const userId = authStore.userData.UserId;
-var currentRoomId;
+var currentRoomId = 0;
 
 register()
 
-onMounted(() => {
+onMounted(async () => {
+  await initializeChatData(); 
+});
+
+const initializeChatData = async () => {
+  var receiverId = route.params.receiverId;
+  if (receiverId && receiverId !== userId.toString()) {
 	debugger
-	var receiverId = route.params.receiverId;
-	debugger
-	if((receiverId != '' || receiverId != undefined) && receiverId != userId.toString()){
-		chatStore.createRoom(parseInt(receiverId.toString())).then((response) => {
-			currentRoomId = response;
-		});
-	}
-})
+    const response = await chatStore.createRoom(parseInt(receiverId.toString()));
+    currentRoomId = response;
+    chatRooms.value.currentRoomId = currentRoomId;
+  }
+
+  await chatStore.loadRooms(); 
+  chatRooms.value.rooms = chatStore.getRooms; 
+};
 
 const chatRooms = ref({
-	currentUserId: authStore.userData.UserId.toString(),
-	currentRoomId: 0,
-	rooms: rooms,
-	messages: [],
-	messagesLoaded: false
-})
+  currentUserId: userId.toString(),
+  currentRoomId: 0,
+  rooms: [] as any[],
+  messages: [],
+  messagesLoaded: false,
+});
 
 function fetchMessages({ room }: any) {
 	chatRooms.value.messagesLoaded = false;
@@ -85,7 +90,7 @@ async function sendMessage(message: any) {
 	<div>
 		<vue-advanced-chat height="calc(100vh - 60px)" 			
 		    :current-user-id="chatRooms.currentUserId"
-			:rooms="JSON.stringify(rooms)" 
+			:rooms="JSON.stringify(chatRooms.rooms)" 
 			:rooms-loaded="true" 
 			:messages="JSON.stringify(chatRooms.messages)"
 			:messages-loaded="chatRooms.messagesLoaded" 
@@ -94,6 +99,8 @@ async function sendMessage(message: any) {
 			:show-audio="false"
 			:show-files="false"
 			:show-add-room="false"
+			:load-first-room="false"
+			:theme="'dark'"
 			@send-message="sendMessage($event.detail[0])" 
 			@fetch-messages="fetchMessages($event.detail[0])" />
 	</div>

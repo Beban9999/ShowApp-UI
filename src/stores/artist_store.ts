@@ -7,6 +7,10 @@ const authStore = useAuthenticationStore();
 
 export const useArtistStore = defineStore("ArtistStore", {
     actions: {
+        async getUserData(username: string) {
+            const userData = await service_get(CallType.GetUser, { username: username });
+            authStore.userData = JSON.parse(userData.data);
+        },
         async getAllArtists() {
             var response = await service_get(CallType.GetArtists);
             return JSON.parse(response.data);
@@ -16,7 +20,6 @@ export const useArtistStore = defineStore("ArtistStore", {
             const response = await service_get(CallType.GetArtists, { userId: userId });
             const data: [Artist] = JSON.parse(response.data);
             const artistData : Artist = data[0];
-            debugger
             return artistData;
         },
 
@@ -41,20 +44,18 @@ export const useArtistStore = defineStore("ArtistStore", {
         },
 
         async insertPost(description: string, files?: any){
-            debugger
             var userid = authStore.userData.UserId;
             var response = await service_post(CallType.InsertPost, { UserId: userid, Description: description });
             var post_id = JSON.parse(response.data);
-            debugger
             if(post_id != 0 && files.length > 0) {
               var resp = await service_upload_media(userid, files, false, post_id);
               return JSON.parse(resp.data);
             } else {
               return false;
             }
-          },
+        },
 
-        async becomeArtist(name: string, description: string, price: number, type: number, location: string, genre: any[], files?: any) {
+        async becomeArtist(name: string, description: string, price: number, type: number, location: string, genre: any[], files?: any){
             var userId = authStore.userData.UserId;
             var response = await service_post(CallType.BecomeArtist, { UserId: userId, Name: name, Description: description, Price: price, TypeId: type, Location: location, Genre: genre});
             console.log("Artis created: " + JSON.parse(response.data));

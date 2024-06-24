@@ -5,7 +5,7 @@ import { useArtistStore } from '../stores/artist_store.ts';
 import { useAuthenticationStore } from '../stores/auth_store.ts';
 
 const authStore = useAuthenticationStore();
-const arstisStore = useArtistStore();
+const artistStore = useArtistStore();
 const userId = authStore.userData.UserId;
 const isArtist = authStore.userData.IsArtist;
 const artists = ref([]);
@@ -34,7 +34,7 @@ const onSortChange = (event: { value: { value: any; }; }) => {
     }
 };
 
-arstisStore.getAllArtists().then(result => {
+artistStore.getAllArtists().then(result => {
     console.log(result);
 
     artists.value = result.filter((artist: { UserId: number; }) => artist.UserId !== userId);
@@ -44,7 +44,6 @@ arstisStore.getAllArtists().then(result => {
 })
 
 function goToProfile(id : any){
-    debugger
     router.push({ name: 'Profile', params: { id: id } });
 }
 
