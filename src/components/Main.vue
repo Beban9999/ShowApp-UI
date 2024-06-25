@@ -53,23 +53,22 @@ function chat(receiverId: number){
 
 </script>
 <template>
-    <DataView :value="artists" :sortOrder="sortOrder" :sortField="sortField" :layout="layout" dataKey="id">
+    <DataView :value="artists" :sortOrder="sortOrder" :sortField="sortField" :layout="layout" dataKey="id" class="h-screen">
         <template #header>
             <div class="flex justify-content-center gap-3">
-                <Calendar v-model="icondisplay" showIcon iconDisplay="input" />
-                <InputText type="text" v-model="value" />
-                <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Type"
+                <!-- <Calendar v-model="icondisplay" showIcon iconDisplay="input" /> -->
+                <InputText type="text" v-model="value" placeholder="Search by name" />
+                <Dropdown v-model="sortKey" class="text-sm" :options="sortOptions" optionLabel="label" placeholder="Type"
                     @change="onSortChange($event)" />
                 <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Genre"
                     @change="onSortChange($event)" />
                 <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By Price"
                     @change="onSortChange($event)" />
+                    <Button>Apply filters</Button>
             </div>
         </template>
 
         <template #grid="slotProps">
-            <!-- <div class="col-12  lg:col-12 xl:col-3 p-2" @click="console.log(slotProps);navigateToRoute(slotProps.key)">
-                <div v-for="(item, index) in slotProps.items" :key="index" class="col-12"> -->
             <div class="grid grid-nogutter align-items-center justify-content-center" style="background-color:#111827">
                 <div v-for="item in slotProps.items" class="col-12 sm:col-4 md:col-3 xl:col-2 p-2">
                     <div class="p-4 border-1 surface-border surface-card border-round">
@@ -106,6 +105,11 @@ function chat(receiverId: number){
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
+}
+</style>
+<style module>
+.dd{
+    font-size: small;
 }
 </style>
 

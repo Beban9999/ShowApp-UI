@@ -7,7 +7,7 @@ const userId = authStore.userData.UserId;
 const menuItems = ref([
     {
         label: 'Home',
-        // icon: 'pi pi-fw pi-file',
+        icon: 'pi pi-home',
         route: '/main'
     },
     // {
@@ -127,10 +127,35 @@ const toggle = (event: any) => {
         </Menubar>
     </div>
     <router-view></router-view>
-    <div>FOOTER</div>
+    <div class="footer w-full h-8rem p-3 flex">
+       
+        <div>
+            <h2>MusicConnect</h2>
+            <p style="color: gray; white-space: nowrap;">© 2023 MusicConnect. All Rights Reserved.</p>
+        </div>
+        <div class="w-full flex justify-content-end gap-3">
+            <div>
+                <h3>Follow us</h3>
+                <div class="flex gap-3">
+                    <a href="https://www.instagram.com/"><i class="pi pi-instagram icon_class"></i></a>
+                    <a href="https://x.com/?lang=en"><i class="pi pi-twitter icon_class"></i></a>
+                    <a href="https://www.facebook.com/"><i class="pi pi-facebook icon_class"></i></a>
+                </div>
+            </div>
+
+        </div>
+            
+    
+    </div>
 </template>
 
 <style scoped>
+.footer{
+    background-color: #1f2937;
+}
+.icon_class{
+    font-size: 1.5rem
+}
 a {
     text-decoration: none;
 }
