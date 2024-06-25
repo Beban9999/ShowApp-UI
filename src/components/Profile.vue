@@ -151,12 +151,13 @@ const removePost = (postId: number) => {
                 <p class="w-full">Post title</p>
                 <div class="w-full flex justify-content-end">
                   <p style="position:relative; ">{{ post.CreatedDate }}</p>
+                  <a v-if="username=='admin' || userId==post.UserId" @click="removePost(post.Id)" class="pi pi-trash m-3"></a>
+
                 </div>   
             </div>
            <span> {{ post.Description }}</span> 
            <br>
           <Image :class="$style.img" v-for="media in post.Media" :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
-          <Button v-if="username=='admin' || userId==post.UserId" @click="removePost(post.Id)" class="pi pi-trash"></Button>
           </div>
         </div>
       </div>
