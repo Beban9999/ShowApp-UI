@@ -9,7 +9,7 @@ interface UserData {
   LoginName: string,
   Email: string,
   Avatar: string,
-  IsArtist: boolean;
+  IsArtist: boolean,
   IsActive: boolean,
   IsDeleted: boolean
 }

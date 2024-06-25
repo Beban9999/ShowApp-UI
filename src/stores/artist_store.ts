@@ -65,6 +65,11 @@ export const useArtistStore = defineStore("ArtistStore", {
             } else {
                 return false;
             }
+        },
+
+        async removePost(postId: number) {
+            var response = await service_post(CallType.RemovePost, { Id: postId });
+            return JSON.parse(response.data);
         }
     },
     persist:{
