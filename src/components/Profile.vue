@@ -5,6 +5,7 @@ import { useArtistStore } from '../stores/artist_store';
 import { Artist } from '../models/artist/Artist';
 import router from '../router';
 import { useAuthenticationStore } from '../stores/auth_store';
+import Swal from 'sweetalert2';
 
 const responsiveOptions = ref([
     {
@@ -23,6 +24,7 @@ const artistStore = useArtistStore();
 const authStore = useAuthenticationStore();
 id.value = route.params.id;
 const userId = authStore.userData.UserId;
+const username = authStore.userData.LoginName;
 
 const imgData = ref([])
 
@@ -60,6 +62,44 @@ onMounted(async () => {
 function addPost() {
   router.push({ name: 'AddPost'});
 }
+
+const removePost = (postId: number) => {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: "Do you want to delete this post?",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+      var resp = await artistStore.removePost(postId);
+      if(resp) {
+        window.location.reload();
+        Swal.fire(
+          'Deleted!',
+          'The post has been deleted.',
+          'success'
+        );
+      } else {
+        Swal.fire(
+          'Error!',
+          'There was an error deleting the post.',
+          'error'
+        );
+      }
+  } catch (error) {
+    Swal.fire(
+      'Error!',
+      'There was an error deleting the post.',
+      'error'
+    );
+  }
+    }
+  });
+};
 </script>
 
 <template>
@@ -111,12 +151,12 @@ function addPost() {
                 <p class="w-full">Post title</p>
                 <div class="w-full flex justify-content-end">
                   <p style="position:relative; ">{{ post.CreatedDate }}</p>
-                </div>
-                  
+                </div>   
             </div>
            <span> {{ post.Description }}</span> 
            <br>
           <Image :class="$style.img" v-for="media in post.Media" :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
+          <Button v-if="username=='admin' || userId==post.UserId" @click="removePost(post.Id)" class="pi pi-trash"></Button>
           </div>
         </div>
       </div>
