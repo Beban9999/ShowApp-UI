@@ -15,5 +15,6 @@ export enum CallType
     GetArtstGenres = "Artist/getgenres",
     BecomeArtist = "Artist/become",
     InsertPost = "Artist/insertpost",  
-    RemovePost = "Artist/removepost"  
+    RemovePost = "Artist/removepost",
+    RemoveArtist = "Artist/removeartist"
 }

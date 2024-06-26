@@ -70,6 +70,11 @@ export const useArtistStore = defineStore("ArtistStore", {
         async removePost(postId: number) {
             var response = await service_post(CallType.RemovePost, { Id: postId });
             return JSON.parse(response.data);
+        },
+
+        async removeArtist(userId: number) {
+            var response = await service_post(CallType.RemoveArtist, { Id: userId });
+            return JSON.parse(response.data);
         }
     },
     persist:{

@@ -6,6 +6,8 @@ import { Artist } from '../models/artist/Artist';
 import router from '../router';
 import { useAuthenticationStore } from '../stores/auth_store';
 import Swal from 'sweetalert2';
+import { useAlert } from '../composables/useAlert';
+const { showConfirmationPopup } = useAlert();
 
 const responsiveOptions = ref([
     {
@@ -63,42 +65,22 @@ function addPost() {
   router.push({ name: 'AddPost'});
 }
 
-const removePost = (postId: number) => {
-  Swal.fire({
-    title: 'Are you sure?',
-    text: "Do you want to delete this post?",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes'
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-      var resp = await artistStore.removePost(postId);
-      if(resp) {
+const removePost = async (postId: number) => {
+  const result = await showConfirmationPopup('Do you want to delete this post?');
+
+  if (result.isConfirmed) {
+    try {
+      const resp = await artistStore.removePost(postId);
+      if (resp) {
         window.location.reload();
-        Swal.fire(
-          'Deleted!',
-          'The post has been deleted.',
-          'success'
-        );
+        Swal.fire('Deleted!', 'The post has been deleted.', 'success');
       } else {
-        Swal.fire(
-          'Error!',
-          'There was an error deleting the post.',
-          'error'
-        );
+        Swal.fire('Error!', 'There was an error deleting the post.', 'error');
       }
-  } catch (error) {
-    Swal.fire(
-      'Error!',
-      'There was an error deleting the post.',
-      'error'
-    );
-  }
+    } catch (error) {
+      Swal.fire('Error!', 'There was an error deleting the post.', 'error');
     }
-  });
+  }
 };
 </script>
 

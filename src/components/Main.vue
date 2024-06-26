@@ -3,11 +3,15 @@ import { ref } from 'vue';
 import router from '../router.ts'
 import { useArtistStore } from '../stores/artist_store.ts';
 import { useAuthenticationStore } from '../stores/auth_store.ts';
+import { useAlert } from '../composables/useAlert';
+import Swal from 'sweetalert2';
+const { showConfirmationPopup } = useAlert();
 
 const authStore = useAuthenticationStore();
 const artistStore = useArtistStore();
 const userId = authStore.userData.UserId;
 const isArtist = authStore.userData.IsArtist;
+const username = authStore.userData.LoginName;
 const artists = ref([]);
 const layout = ref<"grid" | "list" | undefined>("grid");
 const sortKey = ref()
@@ -51,6 +55,24 @@ function chat(receiverId: number){
     router.push({ name: 'Chat', params: { receiverId: receiverId }});
 }
 
+const removeArtist = async (userId: number) => {
+  const result = await showConfirmationPopup('Do you want to delete this artist?');
+
+  if (result.isConfirmed) {
+    try {
+      const resp = await artistStore.removeArtist(userId);
+      if (resp) {
+        window.location.reload();
+        Swal.fire('Deleted!', 'The artist has been deleted.', 'success');
+      } else {
+        Swal.fire('Error!', 'There was an error deleting the artist.', 'error');
+      }
+    } catch (error) {
+      Swal.fire('Error!', 'There was an error deleting the artist.', 'error');
+    }
+  }
+};
+
 </script>
 <template>
     <DataView :value="artists" :sortOrder="sortOrder" :sortField="sortField" :layout="layout" dataKey="id" class="h-screen">
@@ -92,6 +114,7 @@ function chat(receiverId: number){
                             <span class="text-2xl font-semibold">${{ item.Price }}</span>
                         </div>
                         <Button v-if="!isArtist" @click="chat(item.UserId)" class="pi pi-comments"></Button>
+                        <a v-if="username=='admin'" @click="removeArtist(item.UserId)" class="pi pi-trash m-3"></a>
                     </div>
                 </div>
      
