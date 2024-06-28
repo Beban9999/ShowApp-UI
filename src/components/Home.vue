@@ -34,7 +34,8 @@ if (!authStore.userData.IsArtist) {
     menuItems.value.splice(1, 0, {
         label: 'Become an artist',
         // icon: 'pi pi-fw pi-pencil',
-        route: '/BecomeArtist'
+        route: '/BecomeArtist',
+        icon: ''
     });
 }
 const submenuItems = ref([
@@ -46,7 +47,8 @@ const submenuItems = ref([
     },
     {
         label: 'Edit profile',
-        icon: 'pi pi-fw pi-pencil'
+        icon: 'pi pi-fw pi-pencil',
+        route: `/edit_profile/${userId}`
     },
 
     { separator: true },
