@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import router from '../router.ts'
 import { useArtistStore } from '../stores/artist_store.ts';
 import { useAuthenticationStore } from '../stores/auth_store.ts';
@@ -13,6 +13,7 @@ const userId = authStore.userData.UserId;
 const isArtist = authStore.userData.IsArtist;
 const username = authStore.userData.LoginName;
 const artists = ref([]);
+const filteredArtists = ref([]);
 const layout = ref<"grid" | "list" | undefined>("grid");
 const sortKey = ref()
 const sortOrder = ref();
@@ -21,30 +22,53 @@ const sortOptions = ref([
     { label: 'Price High to Low', value: '!price' },
     { label: 'Price Low to High', value: 'price' },
 ]);
+const nameFilter = ref('');
+const typeFilter = ref(null);
+const genreFilter = ref(null);
+const genres = ref();
+const types = ref();
 
-const onSortChange = (event: { value: { value: any; }; }) => {
-    const value = event.value.value;
-    const sortValue = event.value;
+onMounted(async () => {
+  artists.value = await artistStore.getAllArtists();
+  filteredArtists.value = artists.value;
 
-    if (value.indexOf('!') === 0) {
-        sortOrder.value = -1;
-        sortField.value = value.substring(1, value.length);
-        sortKey.value = sortValue;
-    }
-    else {
-        sortOrder.value = 1;
-        sortField.value = value;
-        sortKey.value = sortValue;
-    }
+  types.value = await artistStore.getTypes();
+  genres.value = await artistStore.getGenres();
+});
+
+const applyFilters = () => {
+  filteredArtists.value = artists.value.filter(artist => {
+    return (
+      (!nameFilter.value || artist.Name.toLowerCase().includes(nameFilter.value.toLowerCase())) &&
+      (!typeFilter.value || artist.Type === typeFilter.value) &&
+      (!genreFilter.value || artist.Genres.includes(genreFilter.value))
+    );
+  });
+
+  if (sortKey.value) {
+    const order = sortKey.value.startsWith('!') ? -1 : 1;
+    const field = sortKey.value.replace('!', '');
+    filteredArtists.value.sort((a, b) => {
+      return (a[field] < b[field] ? -1 : 1) * order;
+    });
+  }
 };
+
+function resetFilters(){
+    nameFilter.value = '';
+    typeFilter.value = null;
+    genreFilter.value = null;
+    sortKey.value = null;
+    applyFilters();
+}
 
 artistStore.getAllArtists().then(result => {
     console.log(result);
 
     artists.value = result.filter((artist: { UserId: number; }) => artist.UserId !== userId);
-    for(var i = 0; i < 5; i++){
-        artists.value.push(...result.filter((artist: { UserId: number; }) => artist.UserId !== userId))
-    }
+    // for(var i = 0; i < 5; i++){
+    //     artists.value.push(...result.filter((artist: { UserId: number; }) => artist.UserId !== userId))
+    // }
 })
 
 function goToProfile(id : any){
@@ -75,20 +99,17 @@ const removeArtist = async (userId: number) => {
 
 </script>
 <template>
-    <DataView :value="artists" :sortOrder="sortOrder" :sortField="sortField" :layout="layout" dataKey="id" class="h-screen">
-        <template #header>
-            <div class="flex justify-content-center gap-3">
-                <!-- <Calendar v-model="icondisplay" showIcon iconDisplay="input" /> -->
-                <InputText type="text" v-model="value" placeholder="Search by name" />
-                <Dropdown v-model="sortKey" class="text-sm" :options="sortOptions" optionLabel="label" placeholder="Type"
-                    @change="onSortChange($event)" />
-                <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Genre"
-                    @change="onSortChange($event)" />
-                <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" placeholder="Sort By Price"
-                    @change="onSortChange($event)" />
-                    <Button>Apply filters</Button>
-            </div>
-        </template>
+  <DataView :value="filteredArtists" :sortOrder="sortOrder" :sortField="sortField" :layout="layout" dataKey="id" class="h-screen">
+    <template #header>
+      <div class="flex justify-content-center gap-3">
+        <InputText type="text" v-model="nameFilter" placeholder="Search by name" />
+        <Dropdown v-model="typeFilter" class="text-sm" :options="types" optionLabel="TypeDescription" optionValue="TypeDescription" placeholder="Type" />
+        <Dropdown v-model="genreFilter" :options="genres" optionLabel="GenreName" optionValue="GenreName" placeholder="Genre" />
+        <Dropdown v-model="sortKey" :options="sortOptions" optionLabel="label" optionValue="value" placeholder="Sort By Price" />
+        <Button @click="applyFilters" class="pi pi-search"></Button>
+        <Button @click="resetFilters" class="pi pi-undo"></Button>
+      </div>
+    </template>
 
         <template #grid="slotProps">
             <div class="grid grid-nogutter align-items-center justify-content-center" style="background-color:#111827">
