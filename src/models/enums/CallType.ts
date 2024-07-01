@@ -4,6 +4,8 @@ export enum CallType
     Activate = "Auth/activate",
     IsActive = "Auth/isActive",
     Login = "Auth/login",
+    Validate = "Auth/validate",
+    checkPassword = "Auth/checkPassword",
     GetArtists = "Artist/getartists",
     UploadMedia = "Media/Upload",
     GetUser = "Auth/user",

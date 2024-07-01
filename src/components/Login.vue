@@ -2,7 +2,7 @@
 import router from "../router";
 import { useAuthenticationStore } from "../stores/auth_store";
 import { onMounted, ref } from "vue";
-import { service_get, service_post } from "../services/service_call";
+import { service_post } from "../services/service_call";
 import { CallType } from "../models/enums/CallType";
 import { RequestStatus } from "../models/enums/RequestStatus";
 import { useArtistStore } from "../stores/artist_store";

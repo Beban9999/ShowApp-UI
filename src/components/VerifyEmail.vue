@@ -1,6 +1,6 @@
 <template>
     <div class="flex w-full h-screen">
-        <div class="w-full bg-green-300 text-gray-900 font-bold p-2 flex align-items-center justify-content-center">
+        <div class="w-full font-bold p-2 flex align-items-center justify-content-center">
             <Card>
                 <template #content>
                     <div v-if="availabe">
