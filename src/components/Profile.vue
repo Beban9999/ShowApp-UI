@@ -42,11 +42,12 @@ onMounted(async () => {
               user.Posts.forEach(post => {
                   if (post.Media) {
                       post.Media.forEach(media => {
-                          // Collecting UserId and FileName
-                          imageDetails.push({
-                              UserId: media.UserId,
-                              FileName: media.FileName
-                          });
+                          if(media.FileType.startsWith('image')){
+                            imageDetails.push({
+                                UserId: media.UserId,
+                                FileName: media.FileName
+                            });
+                        }
                       });
                   }
               });
@@ -139,7 +140,17 @@ const removePost = async (postId: number) => {
             </div>
            <span> {{ post.Description }}</span> 
            <br>
-          <Image :class="$style.img" v-for="media in post.Media" :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
+            <div v-for="media in post.Media">
+              <template v-if="media.FileType.startsWith('image')">
+                <Image :class="$style.img" :src="`../../media/${media.UserId}/${media.FileName}`" alt="Image" width="210" height="210" preview />
+              </template>
+              <template v-else-if="media.FileType.startsWith('video')">
+                <video :class="$style.video" width="320" height="240" controls>
+                  <source :src="`../../media/${media.UserId}/${media.FileName}`" :type="media.FileType">
+                  Your browser does not support the video tag.
+                </video>
+              </template>
+            </div>
           </div>
         </div>
       </div>
