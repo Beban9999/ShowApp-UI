@@ -7,6 +7,22 @@
                 <Fieldset legend="Basic informations">
                     <div class="w-full flex align-items-center justify-content-center gap-3">
                         <div class="flex flex-column gap-2">
+                            <label for="username">First name</label>
+                            <InputText id='username' placeholder="Enter your username" type="text" v-model="updateObject.fname" @focusout="basicFieldCheck('fname', updateObject.fname)" />
+                            <small v-if="basicErrorObject['fname']">&nbsp;<i :class="basicFieldHelper.icon" :style="'color:'+basicFieldHelper.color" ></i>&nbsp; {{ basicFieldHelper.text }}</small>
+                            <small v-else>&nbsp;</small>
+                        </div>
+
+                        <div class="flex flex-column gap-2">
+                            <label for="email">Last name</label>
+                            <InputText id="email" placeholder="Enter your email" type="text" v-model="updateObject.lname" @focusout="basicFieldCheck('lname', updateObject.lname)" />
+                            <small v-if="basicErrorObject['lname']">&nbsp;<i :class="basicFieldHelper.icon" :style="'color:'+basicFieldHelper.color "></i>&nbsp; {{ basicFieldHelper.text }}</small>
+                            <small v-else>&nbsp;</small>
+                        </div> 
+                    </div>
+                    <Divider/>
+                    <div class="w-full flex align-items-center justify-content-center gap-3">
+                        <div class="flex flex-column gap-2">
                             <label for="username">Username</label>
                             <InputText id='username' placeholder="Enter your username" type="text" v-model="updateObject.userName" @focusout="fieldCheck('username')" />
                             <small>&nbsp;<i :class="userNameHelper.icon" :style="'color:'+userNameHelper.color" ></i>&nbsp; {{ userNameHelper.text }}</small>
@@ -17,8 +33,6 @@
                             <InputText id="email" placeholder="Enter your email" type="text" v-model="updateObject.email" @focusout="fieldCheck('email')" />
                             <small>&nbsp;<i :class="emailHelper.icon" :style="'color:'+emailHelper.color"></i>&nbsp; {{ emailHelper.text }}</small>
                         </div> 
-
-
                     </div>
                     <Divider/>
                     <div class="w-full flex align-items-center justify-content-center gap-3">
@@ -39,18 +53,24 @@
                     <div class="w-full flex align-items-center justify-content-center gap-3">
                         <div class="flex flex-column gap-2">
                             <label for="username">Artist name</label>
-                            <InputText id='username' placeholder="Enter your username" type="text" v-model="updateObject.artistName" />
+                            <InputText id='username' placeholder="Enter your username" type="text" v-model="updateObject.artistName" @focusout="basicFieldCheck('aname', updateObject.artistName)"/>
+                            <small v-if="basicErrorObject['aname']">&nbsp;<i :class="basicFieldHelper.icon" :style="'color:'+basicFieldHelper.color "></i>&nbsp; {{ basicFieldHelper.text }}</small>
+                            <small v-else>&nbsp;</small>
                         </div>
 
                         <div class="flex flex-column gap-2">
                             <label for="email">Location</label>
-                            <InputText id="email" placeholder="Enter your email" type="text" v-model="updateObject.location" />
+                            <InputText id="email" placeholder="Enter your email" type="text" v-model="updateObject.location" @focusout="basicFieldCheck('location', updateObject.location)" />
+                            <small v-if="basicErrorObject['location']">&nbsp;<i :class="basicFieldHelper.icon" :style="'color:'+basicFieldHelper.color "></i>&nbsp; {{ basicFieldHelper.text }}</small>
+                            <small v-else>&nbsp;</small>
                         </div>
                     </div>
                     <div class="w-full flex align-items-center justify-content-center gap-3 mt-3">
                         <div class="flex flex-column gap-2 w-full">
                             <label for="username">Description</label>
-                            <InputText id='username' placeholder="Enter your username" type="text" v-model="updateObject.description" />
+                            <InputText id='username' placeholder="Enter your username" type="text" v-model="updateObject.description" @focusout="basicFieldCheck('description', updateObject.description)" />
+                            <small v-if="basicErrorObject['description']">&nbsp;<i :class="basicFieldHelper.icon" :style="'color:'+basicFieldHelper.color "></i>&nbsp; {{ basicFieldHelper.text }}</small>
+                            <small v-else>&nbsp;</small>
                         </div>
                     </div>
                     <div class="w-full flex align-items-center justify-content-center gap-3 mt-3 w-full">
@@ -69,13 +89,13 @@
                     <p>Change profile picture</p>
                     <div class="flex align-items-center justify-content-center gap-3">
                         <Image :src="`../../media/${authStore.userData.UserId}/${authStore.userData.Avatar}`" preview  width="210" height="210"/>
-                        <FileUpload mode="basic" name="demo[]" url="/api/upload" accept="image/*" :maxFileSize="1000000" @upload="" />
+                        <FileUpload ref="fileUploadRef" :multiple="false" mode="basic" name="image" accept="image/*" :maxFileSize="1000000" @upload="" />
                     </div>
                 </Fieldset>
             </template>
             <template #footer>
                 <div class="flex gap-3 mt-1">
-                    <Button label="Save" @click="" class="w-full" :disabled="everythingGood()"/>
+                    <Button label="Save" @click="sendUpdate" class="w-full" :disabled="everythingGood()"/>
                 </div>
             </template>
         </Card>
@@ -94,7 +114,10 @@ interface fieldHelper{
     color: string,
     text: string,
 }
-
+const fileUploadRef = ref({
+    upload() { }, //just for typescript
+    files: []
+});
 const isError = ref(false);
 
 const genres = ref();
@@ -111,8 +134,19 @@ function validateEmail(email : string){
     );
 };
 
+const basicErrorObject = ref({
+    "fname": false,
+    "lname": false,
+    "aname": false,
+    "location" : false,
+    "description" : false,
+} as { [key: string]: boolean })
+
+
 
 const updateObject = ref({
+    fname : "",
+    lname : "",
     userName : "",
     email : "",
     oldpassword: "",
@@ -136,6 +170,8 @@ const artistObject = ref({})
         genres = await getGenreIdsByNames(artistObject.value.Genres)
     }
     updateObject.value = {
+        fname : authStore.userData.FirstName,
+        lname : authStore.userData.LastName,
         userName : authStore.userData.LoginName,
         email : authStore.userData.Email,
         oldpassword: "",
@@ -161,6 +197,8 @@ var userNameHelper = ref({} as fieldHelper)
 var emailHelper = ref({} as fieldHelper)
 var oldpasswordHelper = ref({} as fieldHelper)
 var newpasswordHelper = ref({} as fieldHelper)
+
+var basicFieldHelper = ref({} as fieldHelper);
 
 function fieldCheck(field : string){
     var oldValue = ''
@@ -205,6 +243,20 @@ function fieldCheck(field : string){
     })
 }
 
+function basicFieldCheck(field : string, value : string){
+    console.log(field, value);
+    if(value.trim() == ''){
+        getHelper(basicFieldHelper.value, 'bad', 'Field cannot be empty');
+        basicErrorObject.value[field] = true;
+    }
+    else{
+        basicErrorObject.value[field] = false;
+    }
+    if(Object.values(basicErrorObject.value).every(value => value === false)){
+        getHelper(basicFieldHelper.value, '', '');
+    }
+}
+
 function passwordCheck(type: string) {
     if (type === 'old') {
         if (updateObject.value.oldpassword.trim() == "") {
@@ -242,7 +294,7 @@ function passwordCheck(type: string) {
 }
 
 function everythingGood(){
-    if(userNameHelper.value.color == 'red' || emailHelper.value.color == 'red'){
+    if(userNameHelper.value.color == 'red' || emailHelper.value.color == 'red' || basicFieldHelper.value.color == 'red' || newpasswordHelper.value.color == 'red'|| oldpasswordHelper.value.color == 'red'){
         return true;
     }
     return false;
@@ -270,6 +322,14 @@ function getHelper(helperObject : fieldHelper, state : string, message : string)
         helperObject.color= '';
         helperObject.text = '';
     }
+}
+
+function sendUpdate(){
+    console.log(updateObject.value);
+    updateObject.value.profilePicture = fileUploadRef.value.files
+    console.log(fileUploadRef.value.files)
+
+    artistStore.updateArtist(updateObject)
 }
 
 async function getTypeIdByDescription(description: string): Promise<number | undefined> {  

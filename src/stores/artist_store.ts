@@ -67,6 +67,33 @@ export const useArtistStore = defineStore("ArtistStore", {
             }
         },
 
+        async updateArtist(updateObject : any){
+            updateObject.value.userId = authStore.userData.UserId;
+            updateObject.value.isArtist = authStore.userData.IsArtist;
+            console.log(updateObject.value);
+            var response = await service_post(CallType.UpdateArtist, {
+                FirstName: updateObject.value.fname,
+                LastName: updateObject.value.lname,
+                UserName: updateObject.value.userName,
+                Email: updateObject.value.email,
+                OldPassword: updateObject.value.oldpassword,
+                NewPassword: updateObject.value.newpassword,
+                ArtistName: updateObject.value.artistName,
+                Location: updateObject.value.location,
+                Description: updateObject.value.description,
+                Type: updateObject.value.type,
+                Genre: updateObject.value.genre,
+                UserId: updateObject.value.userId,
+                IsArtist: updateObject.value.isArtist
+            });
+
+            if(updateObject.value.profilePicture.length > 0){
+                var response = await service_upload_media(updateObject.value.userId, updateObject.value.profilePicture, true);
+            }
+
+            await this.getUserData(authStore.userData.LoginName);
+        },
+
         async removePost(postId: number) {
             var response = await service_post(CallType.RemovePost, { Id: postId });
             return JSON.parse(response.data);
