@@ -22,6 +22,7 @@
     "vee-validate": "^4.11.8",
     "vue": "^3.3.4",
     "vue-advanced-chat": "^2.0.10",
+    "vue-cal": "^4.8.1",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {

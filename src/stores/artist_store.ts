@@ -102,6 +102,18 @@ export const useArtistStore = defineStore("ArtistStore", {
         async removeArtist(userId: number) {
             var response = await service_post(CallType.RemoveArtist, { Id: userId });
             return JSON.parse(response.data);
+        },
+
+        async insertDates(dates: any[]){
+            var userId = authStore.userData.UserId;
+            var response = await service_post(CallType.InsertDates, { UserId: userId, Dates: dates});
+            console.log("Dates inserted: " + JSON.parse(response.data));
+            debugger
+            if(JSON.parse(response.data)) {
+                return JSON.parse(response.data);
+            } else {
+                return false;
+            }
         }
     },
     persist:{

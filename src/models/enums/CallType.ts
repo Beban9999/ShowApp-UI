@@ -19,5 +19,6 @@ export enum CallType
     UpdateArtist =  "Artist/update",
     InsertPost = "Artist/insertpost",  
     RemovePost = "Artist/removepost",
-    RemoveArtist = "Artist/removeartist"
+    RemoveArtist = "Artist/removeartist",
+    InsertDates = "Artist/insertdates"
 }

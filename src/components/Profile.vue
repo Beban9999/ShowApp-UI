@@ -7,6 +7,8 @@ import router from '../router';
 import { useAuthenticationStore } from '../stores/auth_store';
 import Swal from 'sweetalert2';
 import { useAlert } from '../composables/useAlert';
+import Calendar from '../components/Calendar.vue'
+import EditCalendar from './EditCalendar.vue';
 const { showConfirmationPopup } = useAlert();
 
 const responsiveOptions = ref([
@@ -27,6 +29,9 @@ const authStore = useAuthenticationStore();
 id.value = route.params.id;
 const userId = authStore.userData.UserId;
 const username = authStore.userData.LoginName;
+var disabledDays: any[] = [];
+const showCalendar = ref(false);
+const initialSelectedDates = ref<string[]>([]);
 
 const imgData = ref([])
 
@@ -35,6 +40,7 @@ onMounted(async () => {
       artistObject.value = await artistStore.getArtistData(id.value);
       console.log(artistObject.value)
       const imageDetails = [];
+      disabledDays = artistObject.value.Dates;
 
       // Traverse the data to find the UserId and FileName
       [artistObject.value].forEach(user => {
@@ -83,6 +89,15 @@ const removePost = async (postId: number) => {
     }
   }
 };
+
+function chat(receiverId: number){
+    router.push({ name: 'Chat', params: { receiverId: receiverId }});
+}
+
+const handleDateSubmit = (dates: string[]) => {
+  console.log('Selected Dates:', dates);
+  // You can send these dates to your API
+};
 </script>
 
 <template>
@@ -104,11 +119,12 @@ const removePost = async (postId: number) => {
       <div class="w-full justify-content-end flex" >
         <div>
           <Button v-if="artistObject?.UserId==userId" :class="$style.button" @click="addPost()"><b>Add post</b></Button>
-          <Button :class="$style.button"><b>Follow</b></Button>
-          <Button  class="ml-2" :class="$style.button"><b>Message</b></Button>
+          <Button v-if="artistObject?.UserId!==userId" @click="chat(artistObject?.UserId)" class="pi pi-comments"></Button>
+          <Button class="pi pi-calendar" @click="showCalendar = true"></Button>
         </div>
       </div>
-      
+      <Calendar v-if="artistObject?.UserId!=userId" :isVisible="showCalendar" :disabledDays="disabledDays" @close="showCalendar = false" />
+      <EditCalendar v-if="artistObject?.UserId==userId" :isVisible="showCalendar" :disabledDays="disabledDays" :initialSelectedDates="initialSelectedDates" @close="showCalendar = false" @submit="handleDateSubmit" />
     </div>
     <div class="w-full h-2rem flex justify-content-start gap-2" >
       <Tag :class="$style.tag"><span>{{ artistObject?.Location }}</span></Tag>
@@ -123,7 +139,7 @@ const removePost = async (postId: number) => {
       <div class="card-div mr-3 p-3" style="min-width: 520px; max-width: 520px; min-height: 520px; max-height: 520px">
         <b class="m">Gallery</b>
         <div >
-          <Image :class="$style.img" v-for="(media, index) in imgData.splice(0,4) " :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
+          <Image :class="$style.img" v-for="(media, index) in imgData.slice(0,4) " :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
         </div>
       </div>
       <div class="w-9 card-div p-3">
@@ -192,4 +208,5 @@ const removePost = async (postId: number) => {
 .cover_img{
   position: relative;
 }
+
 </style>

@@ -10,9 +10,11 @@ export class Artist {
     public Avatar: string = "";
     public Genres: string[];
     public Posts: ArtistPost[];
+    public Dates: string[];
 
     constructor() {
         this.Genres = [];
         this.Posts = [];
+        this.Dates = [];
     }
 }
