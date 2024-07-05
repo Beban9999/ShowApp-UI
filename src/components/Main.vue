@@ -5,6 +5,8 @@ import { useArtistStore } from '../stores/artist_store.ts';
 import { useAuthenticationStore } from '../stores/auth_store.ts';
 import { useAlert } from '../composables/useAlert';
 import Swal from 'sweetalert2';
+import EditCalendar from './EditCalendar.vue';
+import Calendar from './Calendar.vue';
 const { showConfirmationPopup } = useAlert();
 
 const authStore = useAuthenticationStore();
@@ -27,13 +29,6 @@ const typeFilter = ref(null);
 const genreFilter = ref(null);
 const genres = ref();
 const types = ref();
-const showCalendar = ref(false);
-const currentItem = ref(null);
-
-const showCalendarForItem = (item: null) => {
-  currentItem.value = item;
-  showCalendar.value = true;
-};
 
 onMounted(async () => {
   artists.value = await artistStore.getAllArtists();
@@ -142,11 +137,11 @@ const removeArtist = async (userId: number) => {
                             <span class="text-2xl font-semibold">${{ item.Price }}</span>
                         </div>
                         <Button v-if="!isArtist" @click="chat(item.UserId)" class="pi pi-comments"></Button>
-                        <Button class="pi pi-calendar" @click="showCalendarForItem(item)"></Button>
+                        <Calendar v-if="userId!=item.UserId" :disabledDays="item.Dates"/>
+                        <EditCalendar v-if="userId==item.UserId" :disabledDays="item.Dates" />
                         <a v-if="username=='admin'" @click="removeArtist(item.UserId)" class="pi pi-trash m-3"></a>
                     </div>
                 </div>
-                <Calendar v-if="showCalendar && currentItem" :isVisible="showCalendar" :disabledDays="currentItem.Dates" @close="showCalendar = false" />
             </div>
         </template>        
     </DataView>

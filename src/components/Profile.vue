@@ -30,8 +30,6 @@ id.value = route.params.id;
 const userId = authStore.userData.UserId;
 const username = authStore.userData.LoginName;
 var disabledDays: any[] = [];
-const showCalendar = ref(false);
-const initialSelectedDates = ref<string[]>([]);
 
 const imgData = ref([])
 
@@ -94,10 +92,6 @@ function chat(receiverId: number){
     router.push({ name: 'Chat', params: { receiverId: receiverId }});
 }
 
-const handleDateSubmit = (dates: string[]) => {
-  console.log('Selected Dates:', dates);
-  // You can send these dates to your API
-};
 </script>
 
 <template>
@@ -120,11 +114,10 @@ const handleDateSubmit = (dates: string[]) => {
         <div>
           <Button v-if="artistObject?.UserId==userId" :class="$style.button" @click="addPost()"><b>Add post</b></Button>
           <Button v-if="artistObject?.UserId!==userId" @click="chat(artistObject?.UserId)" class="pi pi-comments"></Button>
-          <Button class="pi pi-calendar" @click="showCalendar = true"></Button>
         </div>
       </div>
-      <Calendar v-if="artistObject?.UserId!=userId" :isVisible="showCalendar" :disabledDays="disabledDays" @close="showCalendar = false" />
-      <EditCalendar v-if="artistObject?.UserId==userId" :isVisible="showCalendar" :disabledDays="disabledDays" :initialSelectedDates="initialSelectedDates" @close="showCalendar = false" @submit="handleDateSubmit" />
+      <Calendar v-if="artistObject?.UserId!=userId" :disabledDays="disabledDays"/>
+      <EditCalendar v-if="artistObject?.UserId==userId" :disabledDays="disabledDays" />
     </div>
     <div class="w-full h-2rem flex justify-content-start gap-2" >
       <Tag :class="$style.tag"><span>{{ artistObject?.Location }}</span></Tag>
