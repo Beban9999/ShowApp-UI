@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useAuthenticationStore } from '../stores/auth_store';
+import  BecomeArtis  from '../components/BecomeArtist.vue'
+
+
 const authStore = useAuthenticationStore();
 const userId = authStore.userData.UserId;
 
@@ -34,8 +37,12 @@ if (!authStore.userData.IsArtist) {
     menuItems.value.splice(1, 0, {
         label: 'Become an artist',
         // icon: 'pi pi-fw pi-pencil',
-        route: '/BecomeArtist',
-        icon: ''
+        //route: '/BecomeArtist',
+        icon: '',
+        command: () => {
+            console.log("THIS IS BTN TEST");
+            becomeDialog.value = true;
+        }
     });
 }
 const submenuItems = ref([
@@ -61,13 +68,39 @@ function profileClick(){
 
 }
 const menu = ref();
+const becomeDialog = ref(false);
 
 const toggle = (event: any) => {
     menu.value.toggle(event);
 };
+
+const becomeProgress= ref(1);
 </script>
 
 <template>
+    <Dialog v-model:visible="becomeDialog" modal header="Become an Artist" class="w-6">
+        <div class="artist-benefits" v-if="becomeProgress == 1">
+            <p>Join our vibrant community of artists and unlock a world of opportunities. Here’s why you should become an artist on our platform:</p>
+            
+            <ul>
+                <li><strong>Showcase Your Work:</strong> Create a stunning profile to display your art. Upload images, videos, and other media to highlight your talent.</li>
+                <li><strong>Get Discovered:</strong> Increase your visibility as people from around the world can find and follow your profile. Gain fans and supporters.</li>
+                <li><strong>Feature on Our Homepage:</strong> Stand out by appearing on our main page, which is viewed by thousands of visitors daily.</li>
+                <li><strong>Connect with Fellow Artists:</strong> Engage with a network of artists. Collaborate, share ideas, and grow together.</li>
+                <li><strong>Sell Your Art:</strong> Set up an online store to sell your artwork. Reach new customers and grow your business.</li>
+                <li><strong>Access Exclusive Events:</strong> Get invites to special events, exhibitions, and online showcases exclusively for our artists.</li>
+                <li><strong>Professional Support:</strong> Receive tips and guidance from experts to help you improve your skills and manage your artistic career.</li>
+            </ul>
+            
+            <p>Ready to start your artistic journey?</p>
+        </div>
+        
+        <BecomeArtis v-else-if="becomeProgress == 2"></BecomeArtis>
+        <div class="flex justify-content-end gap-2">
+            <Button type="button" label="Back" severity="secondary" @click="(becomeProgress == 2)?becomeProgress--:becomeDialog = false"></Button>
+            <Button type="button" label="Next" @click="(becomeProgress == 1)?becomeProgress++:becomeDialog = false"></Button>
+        </div>
+    </Dialog>
     <div class="card relative z-2">
         <Menubar :model="menuItems" class="p-1">
             <template #start>
