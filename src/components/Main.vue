@@ -68,9 +68,9 @@ artistStore.getAllArtists().then(result => {
     console.log(result);
 
     artists.value = result.filter((artist: { UserId: number; }) => artist.UserId !== userId);
-    // for(var i = 0; i < 5; i++){
-    //     artists.value.push(...result.filter((artist: { UserId: number; }) => artist.UserId !== userId))
-    // }
+    for(var i = 0; i < 5; i++){
+        artists.value.push(...result.filter((artist: { UserId: number; }) => artist.UserId !== userId))
+    }
 })
 
 function goToProfile(id : any){
@@ -136,9 +136,11 @@ const removeArtist = async (userId: number) => {
                         <div class="flex align-items-center justify-content-between">
                             <span class="text-2xl font-semibold">${{ item.Price }}</span>
                         </div>
-                        <Button v-if="!isArtist" @click="chat(item.UserId)" class="pi pi-comments"></Button>
-                        <Calendar v-if="userId!=item.UserId" :disabledDays="item.Dates"/>
-                        <EditCalendar v-if="userId==item.UserId" :disabledDays="item.Dates" />
+                        <div class="flex gap-2">
+                          <Button v-if="!isArtist" @click="chat(item.UserId)" class="pi pi-comments"></Button>
+                          <Calendar v-if="userId!=item.UserId" :disabledDays="item.Dates"/>
+                          <EditCalendar v-if="userId==item.UserId" :disabledDays="item.Dates" />
+                        </div>
                         <a v-if="username=='admin'" @click="removeArtist(item.UserId)" class="pi pi-trash m-3"></a>
                     </div>
                 </div>

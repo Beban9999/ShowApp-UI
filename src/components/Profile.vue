@@ -97,9 +97,7 @@ function chat(receiverId: number){
 <template>
   <div class="m-2">
     <!-- Should be changed to image (cover) -->
-    <div class="w-40rem cover-img mb-2 flex justify-content-center" style="overflow: hidden">
-      <!-- <Image :class="$style.cover_img" width="2200" :src="'../../media/' + artistObject?.PostMedias[0].PostId+'/'+artistObject?.PostMedias[0].FileName"></Image> -->
-    </div>
+
     <!-- <div style="">
     </div> -->
     <div class="flex ml-5 min-w-min">
@@ -111,8 +109,9 @@ function chat(receiverId: number){
       </div>
 
       <div class="w-full justify-content-end flex" >
-        <div>
-          <Button v-if="artistObject?.UserId==userId" :class="$style.button" @click="addPost()"><b>Add post</b></Button>
+        <div class="">
+          <Button v-if="artistObject?.UserId==userId" @click="addPost()" class="pi pi-pencil"></Button>
+          &nbsp;
           <Button v-if="artistObject?.UserId!==userId" @click="chat(artistObject?.UserId)" class="pi pi-comments"></Button>
         </div>
       </div>
