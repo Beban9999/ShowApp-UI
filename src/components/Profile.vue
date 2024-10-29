@@ -95,7 +95,7 @@ function chat(receiverId: number){
 </script>
 
 <template>
-  <div class="m-2">
+  <div class="p-3" style="background-color: #111827;">
     <!-- Should be changed to image (cover) -->
 
     <!-- <div style="">
