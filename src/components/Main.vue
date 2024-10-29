@@ -118,12 +118,14 @@ const removeArtist = async (userId: number) => {
                 <div v-for="item in slotProps.items" class="col-12 sm:col-4 md:col-3 xl:col-2 p-2">
                     <div class="p-4 border-1 surface-border surface-card border-round">
                         <div class="flex flex-wrap align-items-center justify-content-between gap-2">
-                            <div class="flex align-items-center gap-2">
-                                <i class="pi pi-tag"></i>
-                                <span class="font-semibold">{{ item.Type }}</span>
-                            </div>
-                            <div v-for="genre in item.Genres" :key="genre">
-                                <Tag :value="genre">{{ genre }}</Tag>
+                          <div class="flex align-items-center gap-2">
+                            <i class="pi pi-tag"></i>
+                            <span class="font-semibold">{{ item.Type }}</span>
+                        </div>
+                            <div class="flex gap-1">
+                              <div v-for="genre in item.Genres" :key="genre">
+                                  <Tag :value="genre">{{ genre }}</Tag>
+                              </div>
                             </div>
                         </div>
                         <div class="flex flex-column align-items-center gap-3 py-5" @click="console.log(item, slotProps);goToProfile(item.UserId)">
@@ -133,13 +135,15 @@ const removeArtist = async (userId: number) => {
                             <div class="text-2xl font-bold">{{ item.Name }}</div>
                             <div class="text-lg font-medium text-900 mt-1">{{ item.Description }}</div>
                         </div>
-                        <div class="flex align-items-center justify-content-between">
-                            <span class="text-2xl font-semibold">${{ item.Price }}</span>
-                        </div>
-                        <div class="flex gap-2">
-                          <Button v-if="!isArtist" @click="chat(item.UserId)" class="pi pi-comments"></Button>
-                          <Calendar v-if="userId!=item.UserId" :disabledDays="item.Dates"/>
-                          <EditCalendar v-if="userId==item.UserId" :disabledDays="item.Dates" />
+                        <div class="flex justify-content-between flex-wrap">
+                          <div class="flex align-items-center justify-content-between">
+                              <span class="text-2xl font-semibold">${{ item.Price }}</span>
+                          </div>
+                          <div class="flex gap-2">
+                            <Button v-if="!isArtist" @click="chat(item.UserId)" class="pi pi-comments"></Button>
+                            <Calendar v-if="userId!=item.UserId" :disabledDays="item.Dates"/>
+                            <EditCalendar v-if="userId==item.UserId" :disabledDays="item.Dates" />
+                          </div>
                         </div>
                         <a v-if="username=='admin'" @click="removeArtist(item.UserId)" class="pi pi-trash m-3"></a>
                     </div>

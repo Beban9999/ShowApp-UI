@@ -128,42 +128,42 @@ function chat(receiverId: number){
     <Divider />
 
     <div class="w-full flex">
-      <div class="card-div mr-3 p-3" style="min-width: 520px; max-width: 520px; min-height: 520px; max-height: 520px">
+      <div class="card-div mr-3 p-3" style="min-width: 520px; max-width: 520px; min-height: 520px; max-height: 520px; background-color: #1f2937;">
         <b class="m">Gallery</b>
         <div >
           <Image :class="$style.img" v-for="(media, index) in imgData.slice(0,4) " :src="`../../media/${media.UserId}/${media.FileName}`"  alt="Image" width="210" height="210" preview />
         </div>
       </div>
-      <div class="w-9 card-div p-3">
-        <b>Posts</b>
-        <div>
-          <div v-for="post in artistObject?.Posts" class="card-div px-3 mb-2 pb-3" style="min-width: 520px;">
+        <div class="w-9">
+          <div v-for="post in artistObject?.Posts" class="card-div px-3 mb-2 pb-3" style="min-width: 520px; background-color: #1f2937;">
             <div class="flex w-full align-items-start">
-                <p class="w-full">Post title</p>
+                <p class="w-full text-xl">Post title</p>
                 <div class="w-full flex justify-content-end">
-                  <p style="position:relative; ">{{ post.CreatedDate }}</p>
-                  <a v-if="username=='admin' || userId==post.UserId" @click="removePost(post.Id)" class="pi pi-trash m-3"></a>
+                  <p class="text-xs" style="position:relative; color:gray ">{{ post.CreatedDate }}</p>
+                  <a v-if="username=='admin' || userId==post.UserId" @click="removePost(post.Id)" class="pi pi-trash m-3 text-xs"></a>
 
                 </div>   
             </div>
            <span> {{ post.Description }}</span> 
            <br>
-            <div v-for="media in post.Media">
-              <template v-if="media.FileType.startsWith('image')">
-                <Image :class="$style.img" :src="`../../media/${media.UserId}/${media.FileName}`" alt="Image" width="210" height="210" preview />
-              </template>
-              <template v-else-if="media.FileType.startsWith('video')">
-                <video :class="$style.video" width="320" height="240" controls>
-                  <source :src="`../../media/${media.UserId}/${media.FileName}`" :type="media.FileType">
-                  Your browser does not support the video tag.
-                </video>
-              </template>
-            </div>
+           <div class="flex">
+             <div v-for="media in post.Media">
+               <template v-if="media.FileType.startsWith('image')">
+                 <Image :class="$style.img" :src="`../../media/${media.UserId}/${media.FileName}`" alt="Image" width="210" height="210" preview />
+               </template>
+               <template v-else-if="media.FileType.startsWith('video')">
+                 <video :class="$style.video" width="320" height="240" controls>
+                   <source :src="`../../media/${media.UserId}/${media.FileName}`" :type="media.FileType">
+                   Your browser does not support the video tag.
+                 </video>
+               </template>
+             </div>
+           </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  
 </template>
 
 

@@ -43,11 +43,11 @@ function submit() {
 </script>
 
 <template>
-    <div class="w-full">
+    <div class="w-full h-screen">
         <Card class="w-7 mx-auto mt-5">
             <template #title>
                 <div class="flex flex-column card-container green-container gap-3 align-items-center">
-                    Become an artist
+                    Add new post
                 </div>
             </template>
             <template #content>
